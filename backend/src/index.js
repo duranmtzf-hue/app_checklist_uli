@@ -64,6 +64,6 @@ if (userCount.c === 0) {
   console.log('Usuario inicial creado: admin@uli.com / admin123');
 }
 
-app.listen(PORT, () => {
-  console.log(`API escuchando en http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`API escuchando en http://0.0.0.0:${PORT}`);
 });
