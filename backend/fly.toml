@@ -1,0 +1,30 @@
+# fly.toml - Configuración para Fly.io
+# Ejecutar desde la raíz del repo: fly launch (o deploy) desde la carpeta backend
+
+app = 'app-checklist-uli'
+
+[build]
+  [build.args]
+    NODE_ENV = "production"
+
+[env]
+  PORT = "8080"
+  DB_PATH = "/data/app.db"
+  UPLOAD_DIR = "/data/uploads"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[vm]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[mounts]
+  source = "app_checklist_data"
+  destination = "/data"
