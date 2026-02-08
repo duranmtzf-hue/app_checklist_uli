@@ -11,6 +11,6 @@ COPY fly.toml ./
 # Crear directorio para datos (se monta volumen en /data)
 RUN mkdir -p /data/uploads
 
-EXPOSE 8080
+EXPOSE 4000
 
 CMD ["node", "src/index.js"]
