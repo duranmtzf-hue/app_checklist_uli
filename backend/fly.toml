@@ -11,12 +11,12 @@ primary_region = 'dfw'
     NODE_ENV = "production"
 
 [env]
-  PORT = "4000"
+  PORT = "8080"
   DB_PATH = "/data/app.db"
   UPLOAD_DIR = "/data/uploads"
 
 [http_service]
-  internal_port = 4000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
