@@ -44,6 +44,7 @@ app.use('/api/visitas', visitas);
 app.use('/api/reportes', reportes);
 app.use('/api/email', email);
 
+app.get('/', (req, res) => res.json({ ok: true, message: 'APP Checklist API' }));
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 app.post('/api/upload', authMiddleware, multer({ storage: uploadStorage }).single('foto'), (req, res) => {
