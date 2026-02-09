@@ -291,7 +291,7 @@ export default function NuevaVisita() {
             : <input type="text" className="chk-input" placeholder="Escriba aquí..." value={r.valor_texto ?? ''} onChange={e => setResp(item.id, 'valor_texto', e.target.value)} />
         )}
         {item.tipo === 'numero' && (
-          <input type="number" className="chk-input chk-input-sm" placeholder={item.titulo.includes('Temp') ? '°C o °F' : item.titulo.includes('Tiempo') ? 'min' : item.titulo.includes('Inventario') || item.titulo.includes('Días') ? 'días' : '#'} value={r.valor_numero ?? ''} onChange={e => setResp(item.id, 'valor_numero', e.target.value)} />
+          <input type="number" className="chk-input chk-input-sm" placeholder={item.titulo.includes('Temp') ? '°F' : item.titulo.includes('Tiempo') ? 'min' : item.titulo.includes('Inventario') || item.titulo.includes('Días') ? 'días' : '#'} value={r.valor_numero ?? ''} onChange={e => setResp(item.id, 'valor_numero', e.target.value)} />
         )}
         {item.tipo === 'estatus' && (
           <div className="chk-estatus">
