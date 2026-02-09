@@ -125,6 +125,8 @@ router.post('/', (req, res) => {
   try {
     const { sucursal_id, fecha, plan_accion, gerente, plan_financiero, plan_experiencia, plan_operativo, respuestas, estado } = req.body;
     if (!sucursal_id) return res.status(400).json({ error: 'sucursal_id requerido' });
+    const sucExists = db.prepare('SELECT id FROM sucursales WHERE id = ?').get(sucursal_id);
+    if (!sucExists) return res.status(400).json({ error: 'Sucursal no válida. Seleccione otra sucursal o recargue la página.' });
     const id = randomUUID();
     const fechaVal = fecha || new Date().toISOString().slice(0, 19).replace('T', ' ');
     const estadoVal = ['borrador', 'completada', 'sincronizada'].includes(estado) ? estado : 'completada';
@@ -141,11 +143,13 @@ router.post('/', (req, res) => {
     `).run(id, req.user.id, sucursal_id, fechaVal, estadoVal, plan_accion || null, gerente || null, plan_financiero || null, plan_experiencia || null, plan_operativo || null);
 
     if (Array.isArray(respuestas)) {
+      const validIds = new Set(db.prepare('SELECT id FROM checklist_plantilla').all().map((row) => row.id));
       const insert = db.prepare(`
         INSERT INTO visita_respuestas (id, visita_id, item_id, valor_si_no, valor_texto, valor_numero, valor_porcentaje, valor_foto_path, observaciones)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       for (const r of respuestas) {
+        if (!r.item_id || !validIds.has(r.item_id)) continue;
         const rid = randomUUID();
         insert.run(
           rid, id, r.item_id,
@@ -179,7 +183,11 @@ router.put('/:id', (req, res) => {
       }
     }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    if (sucursal_id) db.prepare('UPDATE visitas SET sucursal_id = ?, updated_at = ? WHERE id = ?').run(sucursal_id, now, req.params.id);
+    if (sucursal_id) {
+      const sucExists = db.prepare('SELECT id FROM sucursales WHERE id = ?').get(sucursal_id);
+      if (!sucExists) return res.status(400).json({ error: 'Sucursal no válida. Seleccione otra sucursal o recargue la página.' });
+      db.prepare('UPDATE visitas SET sucursal_id = ?, updated_at = ? WHERE id = ?').run(sucursal_id, now, req.params.id);
+    }
     if (fecha) db.prepare('UPDATE visitas SET fecha = ?, updated_at = ? WHERE id = ?').run(fecha, now, req.params.id);
     if (plan_accion !== undefined) {
       db.prepare('UPDATE visitas SET plan_accion = ?, updated_at = ? WHERE id = ?').run(plan_accion, now, req.params.id);
@@ -193,11 +201,13 @@ router.put('/:id', (req, res) => {
     }
     if (Array.isArray(respuestas)) {
       db.prepare('DELETE FROM visita_respuestas WHERE visita_id = ?').run(req.params.id);
+      const validIds = new Set(db.prepare('SELECT id FROM checklist_plantilla').all().map((row) => row.id));
       const insert = db.prepare(`
         INSERT INTO visita_respuestas (id, visita_id, item_id, valor_si_no, valor_texto, valor_numero, valor_porcentaje, valor_foto_path, observaciones)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       for (const r of respuestas) {
+        if (!r.item_id || !validIds.has(r.item_id)) continue;
         insert.run(
           randomUUID(), req.params.id, r.item_id,
           r.valor_si_no ?? null, r.valor_texto ?? null, r.valor_numero ?? null, r.valor_porcentaje ?? null,

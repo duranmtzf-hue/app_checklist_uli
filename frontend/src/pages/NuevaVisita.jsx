@@ -89,6 +89,10 @@ export default function NuevaVisita() {
   useEffect(() => { load(); }, [load]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [section]);
+
+  useEffect(() => {
     if (!isOnline() && plantilla.length > 0) {
       obtenerDraftOffline().then((d) => {
         if (d?.selected?.sucursal) {
@@ -415,7 +419,7 @@ export default function NuevaVisita() {
       <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
         <div className="flex gap-2 pb-2 min-w-max sm:flex-wrap sm:min-w-0">
           {SECTIONS.map(s => (
-            <button key={s.id} type="button" onClick={() => setSection(s.id)} className={`shrink-0 px-4 py-3 min-h-[44px] rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 touch-manipulation active:opacity-90 ${section === s.id ? 'text-white shadow-md' : 'bg-[var(--bg-elevated)] text-[var(--text-muted)] hover:bg-[var(--border)]'}`} style={section === s.id ? { background: 'linear-gradient(135deg, var(--chk-blue), var(--chk-blue-dark))' } : {}}>
+            <button key={s.id} type="button" onClick={() => setSection(s.id)} className={`shrink-0 px-4 py-3 min-h-[44px] rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 touch-manipulation active:opacity-90 ${section === s.id ? 'text-white shadow-md' : 'bg-[var(--bg-elevated)] text-[var(--text-muted)] hover:bg-[var(--border)]'}`} style={section === s.id ? { background: 'linear-gradient(135deg, var(--chk-blue), var(--chk-blue-dark))' } : {}} aria-label={`Ir a ${s.title}`}>
               <i className={`fas ${s.icon}`} /><span className="hidden sm:inline">{s.title}</span>
             </button>
           ))}

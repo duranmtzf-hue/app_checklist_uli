@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node src/index.js",
     "build": "echo 'No build step'",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "deploy": "fly deploy"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
