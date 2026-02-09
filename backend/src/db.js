@@ -140,7 +140,7 @@ const CHECKLIST_INTEGRAL = [
   ['c2-4', 'Todos los productos químicos están bajo llave y almacenes cerrados', 'si_no', 26, 1, '2. Validación Financiera en Campo'],
   // ——— 3. CALIDAD Y EXPERIENCIA (Causa Raíz Qualtrics) ———
   ['c3-1', 'Temperatura del Producto: (Si Qualtrics dice "Comida Fría", tomar temp. de carnes y papas).', 'si_no', 27, 1, '3. Calidad y Experiencia (Qualtrics)'],
-  ['c3-2', 'Temp. Carne (°C / °F)', 'numero', 28, 0, '3. Calidad y Experiencia (Qualtrics)'],
+  ['c3-2', 'Temp. Carne (°F)', 'numero', 28, 0, '3. Calidad y Experiencia (Qualtrics)'],
   ['c3-3', 'Limpieza de Baños/Comedor: (Factor #1 de baja calificación en limpieza).', 'si_no', 29, 1, '3. Calidad y Experiencia (Qualtrics)'],
   ['c3-4', 'Amabilidad en Caja/Entrega: ¿Hubo contacto visual, saludo y sonrisa?', 'si_no', 30, 1, '3. Calidad y Experiencia (Qualtrics)'],
   ['c3-5', 'Exactitud de la Orden: Revisar 1 bolsa de entrega. ¿Está completa y con servilletas?', 'si_no', 31, 1, '3. Calidad y Experiencia (Qualtrics)'],
@@ -242,9 +242,9 @@ try {
 try {
   db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Todos los productos químicos están bajo llave y almacenes cerrados', 'c2-4']);
 } catch (_) {}
-// Migración: Temp. Carne con °C y °F
+// Migración: Temp. Carne solo °F
 try {
-  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Temp. Carne (°C / °F)', 'c3-2']);
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Temp. Carne (°F)', 'c3-2']);
 } catch (_) {}
 // Migración: Exactitud de la Orden - 1 bolsa
 try {
