@@ -16,6 +16,20 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+const MIN_PROGRESS_PERCENT = 80;
+
+function progressFromRespuestas(respuestas, totalItems) {
+  if (!totalItems) return 100;
+  const completed = respuestas.filter((r) =>
+    r.valor_si_no != null ||
+    (r.valor_texto != null && String(r.valor_texto).trim() !== '') ||
+    r.valor_numero != null ||
+    r.valor_porcentaje != null ||
+    (r.valor_foto_path != null && String(r.valor_foto_path).trim() !== '')
+  ).length;
+  return Math.round((completed / totalItems) * 100);
+}
+
 const router = Router();
 router.use(authMiddleware);
 
@@ -67,6 +81,11 @@ router.get('/:id/pdf', async (req, res) => {
       JOIN checklist_plantilla cp ON vr.item_id = cp.id
       WHERE vr.visita_id = ? ORDER BY cp.orden
     `).all(req.params.id);
+    const totalItems = db.prepare('SELECT COUNT(*) as c FROM checklist_plantilla').get().c;
+    const progress = progressFromRespuestas(respuestas, totalItems);
+    if (progress < MIN_PROGRESS_PERCENT) {
+      return res.status(400).json({ error: 'Se requiere al menos 80% del checklist completado para descargar el PDF.' });
+    }
     const pdfBytes = await generarPDFVisita({ ...v, respuestas });
     const safeName = (v.sucursal_nombre || 'sucursal').replace(/[^\w\s\-]/g, '').replace(/\s+/g, '_').slice(0, 60);
     const filename = `Visita_${safeName}_${(v.fecha || '').slice(0, 10)}.pdf`;
@@ -97,7 +116,9 @@ router.get('/:id', (req, res) => {
     JOIN checklist_plantilla cp ON vr.item_id = cp.id
     WHERE vr.visita_id = ? ORDER BY cp.orden
   `).all(req.params.id);
-  res.json({ ...v, respuestas });
+  const totalItems = db.prepare('SELECT COUNT(*) as c FROM checklist_plantilla').get().c;
+  const progress_percent = progressFromRespuestas(respuestas, totalItems);
+  res.json({ ...v, respuestas, progress_percent });
 });
 
 router.post('/', (req, res) => {
@@ -107,6 +128,13 @@ router.post('/', (req, res) => {
     const id = randomUUID();
     const fechaVal = fecha || new Date().toISOString().slice(0, 19).replace('T', ' ');
     const estadoVal = ['borrador', 'completada', 'sincronizada'].includes(estado) ? estado : 'completada';
+    if (estadoVal === 'completada' && Array.isArray(respuestas)) {
+      const totalItems = db.prepare('SELECT COUNT(*) as c FROM checklist_plantilla').get().c;
+      const progress = progressFromRespuestas(respuestas, totalItems);
+      if (progress < MIN_PROGRESS_PERCENT) {
+        return res.status(400).json({ error: 'Se requiere al menos 80% del checklist completado para enviar.' });
+      }
+    }
     db.prepare(`
       INSERT INTO visitas (id, usuario_id, sucursal_id, fecha, estado, plan_accion, gerente, plan_financiero, plan_experiencia, plan_operativo)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -143,6 +171,13 @@ router.put('/:id', (req, res) => {
     const { plan_accion, gerente, plan_financiero, plan_experiencia, plan_operativo, estado, respuestas, sucursal_id, fecha } = req.body;
     const v = db.prepare('SELECT id FROM visitas WHERE id = ?').get(req.params.id);
     if (!v) return res.status(404).json({ error: 'Visita no encontrada' });
+    if (estado === 'completada' && Array.isArray(respuestas)) {
+      const totalItems = db.prepare('SELECT COUNT(*) as c FROM checklist_plantilla').get().c;
+      const progress = progressFromRespuestas(respuestas, totalItems);
+      if (progress < MIN_PROGRESS_PERCENT) {
+        return res.status(400).json({ error: 'Se requiere al menos 80% del checklist completado para enviar.' });
+      }
+    }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     if (sucursal_id) db.prepare('UPDATE visitas SET sucursal_id = ?, updated_at = ? WHERE id = ?').run(sucursal_id, now, req.params.id);
     if (fecha) db.prepare('UPDATE visitas SET fecha = ?, updated_at = ? WHERE id = ?').run(fecha, now, req.params.id);

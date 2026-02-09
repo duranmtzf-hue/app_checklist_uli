@@ -225,6 +225,11 @@ export default function NuevaVisita() {
       setTimeout(() => setToast(null), 2500);
       return;
     }
+    if (progress < MIN_PROGRESS_PERCENT) {
+      setToast({ msg: 'Complete al menos el 80% del checklist para enviar', type: 'warning' });
+      setTimeout(() => setToast(null), 2500);
+      return;
+    }
     setSaving(true);
     setError('');
     const payload = buildPayload('completada');
@@ -286,7 +291,7 @@ export default function NuevaVisita() {
             : <input type="text" className="chk-input" placeholder="Escriba aquí..." value={r.valor_texto ?? ''} onChange={e => setResp(item.id, 'valor_texto', e.target.value)} />
         )}
         {item.tipo === 'numero' && (
-          <input type="number" className="chk-input chk-input-sm" placeholder={item.titulo.includes('Temp') ? '°C' : item.titulo.includes('Tiempo') ? 'min' : '#'} value={r.valor_numero ?? ''} onChange={e => setResp(item.id, 'valor_numero', e.target.value)} />
+          <input type="number" className="chk-input chk-input-sm" placeholder={item.titulo.includes('Temp') ? '°C o °F' : item.titulo.includes('Tiempo') ? 'min' : item.titulo.includes('Inventario') || item.titulo.includes('Días') ? 'días' : '#'} value={r.valor_numero ?? ''} onChange={e => setResp(item.id, 'valor_numero', e.target.value)} />
         )}
         {item.tipo === 'estatus' && (
           <div className="chk-estatus">
@@ -342,6 +347,7 @@ export default function NuevaVisita() {
     );
   };
 
+  const MIN_PROGRESS_PERCENT = 80;
   const currentSectionInfo = SECTIONS.find(s => s.id === section);
   const progress = plantilla.length ? Math.round((plantilla.filter(p => {
     const r = respuestas[p.id];
@@ -349,8 +355,10 @@ export default function NuevaVisita() {
     if (p.tipo === 'texto') return (r?.valor_texto?.trim()?.length ?? 0) > 0;
     if (p.tipo === 'numero' || p.tipo === 'porcentaje') return r?.valor_numero != null || r?.valor_porcentaje != null;
     if (p.tipo === 'estatus') return r?.valor_numero != null;
+    if (p.tipo === 'foto') return !!(fotos[p.id] || (r?.valor_foto_path && String(r.valor_foto_path).trim()));
     return false;
   }).length / plantilla.length) * 100) : 0;
+  const canSubmit = progress >= MIN_PROGRESS_PERCENT;
 
   if (loading) {
     return (
@@ -414,19 +422,9 @@ export default function NuevaVisita() {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
-        <div>
-          <h2 className="text-lg font-bold text-[var(--text)]">{currentSectionInfo?.title}</h2>
-          <p className="text-sm text-[var(--text-muted)]">{currentSectionInfo?.desc}</p>
-        </div>
-        <div className="flex gap-2">
-          <button type="button" onClick={handleGuardar} disabled={saving} className="btn btn-secondary">
-            <i className={`fas ${saving ? 'fa-spinner fa-spin' : 'fa-save'}`} /> {saving ? 'Guardando…' : 'Guardar'}
-          </button>
-          <button type="button" onClick={() => { const i = SECTIONS.findIndex(s => s.id === section); if (i < SECTIONS.length - 1) setSection(SECTIONS[i + 1].id); }} className="btn btn-primary shadow-md" style={{ background: 'linear-gradient(135deg, var(--chk-blue), var(--chk-blue-dark))' }}>
-            Siguiente <i className="fas fa-arrow-right" />
-          </button>
-        </div>
+      <div className="pb-2">
+        <h2 className="text-lg font-bold text-[var(--text)]">{currentSectionInfo?.title}</h2>
+        <p className="text-sm text-[var(--text-muted)]">{currentSectionInfo?.desc}</p>
       </div>
 
       <div>
@@ -509,24 +507,40 @@ export default function NuevaVisita() {
             <div className="chk-card card-audit text-center py-12">
               <i className="fas fa-clipboard-check text-7xl mb-6" style={{ color: 'var(--chk-success)' }} />
               <h2 className="text-2xl font-bold text-[var(--text)] mb-3">Checklist Completado</h2>
-              <p className="text-[var(--text-muted)] max-w-md mx-auto mb-6">Revise los datos y envíe la inspección. Tras enviar podrá descargar el PDF desde el detalle de la visita.</p>
+              <p className="text-[var(--text-muted)] max-w-md mx-auto mb-6">Revise los datos y envíe la inspección. Se requiere al menos el 80% del checklist completado para enviar y descargar el PDF.</p>
+              {!canSubmit && (
+                <p className="text-sm font-medium mb-4" style={{ color: 'var(--warning)' }}>
+                  <i className="fas fa-exclamation-triangle mr-1" /> Complete al menos el 80% del checklist para poder enviar.
+                </p>
+              )}
               <div className="flex flex-wrap justify-center gap-4 mb-8">
                 <div className="rounded-xl px-6 py-4 min-w-[160px]" style={{ background: 'var(--bg)' }}>
-                  <div className="text-3xl font-bold" style={{ color: 'var(--chk-blue)' }}>{progress}%</div>
-                  <div className="text-[var(--text-muted)] text-sm">Progreso</div>
+                  <div className="text-3xl font-bold" style={{ color: canSubmit ? 'var(--chk-blue)' : 'var(--warning)' }}>{progress}%</div>
+                  <div className="text-[var(--text-muted)] text-sm">Progreso {canSubmit ? '' : '(mín. 80%)'}</div>
                 </div>
                 <div className="rounded-xl px-6 py-4 min-w-[160px]" style={{ background: 'var(--bg)' }}>
                   <div className="text-xl font-bold text-[var(--text)] truncate max-w-[140px] mx-auto">{suc?.nombre || '-'}</div>
                   <div className="text-[var(--text-muted)] text-sm">Sucursal</div>
                 </div>
               </div>
-              <button type="button" onClick={handleSubmit} disabled={saving || !selected.sucursal} className="btn btn-primary px-8 py-4 text-lg disabled:opacity-50 shadow-md" style={{ background: 'linear-gradient(135deg, var(--chk-success), #059669)' }}>
+              <button type="button" onClick={handleSubmit} disabled={saving || !selected.sucursal || !canSubmit} className="btn btn-primary px-8 py-4 text-lg disabled:opacity-50 shadow-md" style={{ background: 'linear-gradient(135deg, var(--chk-success), #059669)' }}>
                 <i className={`fas ${saving ? 'fa-spinner fa-spin' : 'fa-paper-plane'} mr-2`} />
                 {saving ? 'Guardando…' : 'Enviar Checklist'}
               </button>
               <p className="mt-4 text-sm text-[var(--text-muted)] flex items-center justify-center gap-2">
                 <i className="fas fa-file-pdf" /> Podrás descargar el PDF en el detalle de la visita
               </p>
+            </div>
+          )}
+
+          {section !== 'resumen' && (
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-6 pt-6 pb-4 border-t border-[var(--border)]">
+              <button type="button" onClick={handleGuardar} disabled={saving} className="btn btn-secondary order-2 sm:order-1">
+                <i className={`fas ${saving ? 'fa-spinner fa-spin' : 'fa-save'}`} /> {saving ? 'Guardando…' : 'Guardar'}
+              </button>
+              <button type="button" onClick={() => { const i = SECTIONS.findIndex(s => s.id === section); if (i < SECTIONS.length - 1) setSection(SECTIONS[i + 1].id); }} className="btn btn-primary shadow-md order-1 sm:order-2" style={{ background: 'linear-gradient(135deg, var(--chk-blue), var(--chk-blue-dark))' }}>
+                Siguiente <i className="fas fa-arrow-right" />
+              </button>
             </div>
           )}
         </div>

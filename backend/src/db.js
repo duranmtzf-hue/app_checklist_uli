@@ -111,7 +111,7 @@ const CHECKLIST_INTEGRAL = [
   // ——— 1. PRE-WORK: INDICADORES CLAVE ———
   // A. SATISFACCIÓN (QUALTRICS) — Dato Actual | Meta/Objetivo | Estatus
   ['c1-1', 'OSAT (Satisfacción General): Dato actual (%)', 'porcentaje', 1, 1, '1A. Pre-work: Satisfacción (Qualtrics)'],
-  ['c1-1m', 'OSAT: Meta / Objetivo (ej. 85%)', 'texto', 2, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
+  ['c1-1m', 'OSAT: Meta / Objetivo (ej. 4.9)', 'texto', 2, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
   ['c1-1e', 'OSAT Estatus (🟢🟡🔴)', 'estatus', 3, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
   ['c1-2', 'Speed of Service (Percepción): Dato actual (%)', 'porcentaje', 4, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
   ['c1-2m', 'Speed of Service: Meta / Objetivo (%)', 'texto', 5, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
@@ -123,68 +123,71 @@ const CHECKLIST_INTEGRAL = [
   ['c1-4m', 'Alertas: Meta / Objetivo (ej. 0)', 'texto', 11, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
   ['c1-4e', 'Alertas Estatus', 'estatus', 12, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
   // B. COSTOS Y CONTROL (REPORTE ARGUILEA) — Dato Actual | Desviación Permitida | Estatus
-  ['c1-5', 'Resultado Global Auditoría: Dato actual (%) — Meta >90%', 'porcentaje', 13, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
-  ['c1-5m', 'Resultado Auditoría: Desviación permitida (ej. >90%)', 'texto', 14, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
+  ['c1-5', 'Resultado Global Auditoría: Dato actual (%) — Meta >95%', 'porcentaje', 13, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
+  ['c1-5m', 'Resultado Auditoría: Desviación permitida (ej. >95%)', 'texto', 14, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
   ['c1-5e', 'Resultado Auditoría Estatus', 'estatus', 15, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
-  ['c1-6', 'Diferencia de Inventario ($): Dato actual — Meta <$500', 'numero', 16, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
-  ['c1-6m', 'Inventario: Desviación permitida (ej. <$500)', 'texto', 17, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
+  ['c1-6', 'Días de Inventario: Dato actual — Meta 14 días', 'numero', 16, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
+  ['c1-6m', 'Inventario: Desviación permitida (ej. max 3 dias)', 'texto', 17, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
   ['c1-6e', 'Inventario Estatus', 'estatus', 18, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
   ['c1-7', 'COS (Costo de Venta) Real vs Teórico: Dato (%) — Meta +/- 0.5%', 'porcentaje', 19, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
   ['c1-7m', 'COS: Desviación permitida (ej. +/- 0.5%)', 'texto', 20, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
   ['c1-7e', 'COS Estatus', 'estatus', 21, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
   ['c1-8', 'Top 3 Faltantes (Mermas/Robo): 1. ________  2. ________  3. ________', 'texto', 22, 0, '1B. Pre-work: Costos y Control (Arguilea)'],
   // ——— 2. VALIDACIÓN FINANCIERA EN CAMPO ———
-  ['c2-1', 'Validación de Faltantes Críticos: (Si Arguilea reportó falta de carne, contar carne ahora mismo).', 'si_no', 23, 1, '2. Validación Financiera en Campo'],
-  ['c2-2', 'Registro de Mermas (Waste): ¿Se está pesando/contando la merma real o solo se digita?', 'si_no', 24, 1, '2. Validación Financiera en Campo'],
-  ['c2-3', 'Control de Porciones: Verificar peso de helados y cantidad de papas (causa raíz de costos altos).', 'si_no', 25, 1, '2. Validación Financiera en Campo'],
-  ['c2-4', 'Seguridad de Almacén: ¿La llave del cuarto frío/seco la tiene solo el Gerente?', 'si_no', 26, 1, '2. Validación Financiera en Campo'],
+  ['c2-1', 'Validación de Faltantes Críticos', 'si_no', 23, 1, '2. Validación Financiera en Campo'],
+  ['c2-2', 'Registro de Mermas: ¿Se está pesando/contando la merma real o solo se digita?', 'si_no', 24, 1, '2. Validación Financiera en Campo'],
+  ['c2-3', 'Verificar proceso de elaboración de productos', 'si_no', 25, 1, '2. Validación Financiera en Campo'],
+  ['c2-4', 'Todos los productos químicos están bajo llave y almacenes cerrados', 'si_no', 26, 1, '2. Validación Financiera en Campo'],
   // ——— 3. CALIDAD Y EXPERIENCIA (Causa Raíz Qualtrics) ———
   ['c3-1', 'Temperatura del Producto: (Si Qualtrics dice "Comida Fría", tomar temp. de carnes y papas).', 'si_no', 27, 1, '3. Calidad y Experiencia (Qualtrics)'],
-  ['c3-2', 'Temp. Carne (°C)', 'numero', 28, 0, '3. Calidad y Experiencia (Qualtrics)'],
+  ['c3-2', 'Temp. Carne (°C / °F)', 'numero', 28, 0, '3. Calidad y Experiencia (Qualtrics)'],
   ['c3-3', 'Limpieza de Baños/Comedor: (Factor #1 de baja calificación en limpieza).', 'si_no', 29, 1, '3. Calidad y Experiencia (Qualtrics)'],
   ['c3-4', 'Amabilidad en Caja/Entrega: ¿Hubo contacto visual, saludo y sonrisa?', 'si_no', 30, 1, '3. Calidad y Experiencia (Qualtrics)'],
-  ['c3-5', 'Exactitud de la Orden: Revisar 5 bolsas de entrega. ¿Están completas y con servilletas?', 'si_no', 31, 1, '3. Calidad y Experiencia (Qualtrics)'],
+  ['c3-5', 'Exactitud de la Orden: Revisar 1 bolsa de entrega. ¿Está completa y con servilletas?', 'si_no', 31, 1, '3. Calidad y Experiencia (Qualtrics)'],
   ['c3-6', 'Errores detectados en órdenes', 'numero', 32, 0, '3. Calidad y Experiencia (Qualtrics)'],
   // ——— 4. MANTENIMIENTO E IMAGEN (Soporte a la Venta) ———
-  ['c4-1', 'Equipos Críticos: ¿Funcionan al 100%? (Broiler, Freidoras, Helado).', 'si_no', 33, 1, '4. Mantenimiento e Imagen'],
+  ['c4-1', 'Equipos Críticos: ¿Funcionan al 100%? (Broiler, Freidoras, Helado y equipos de refrigeración).', 'si_no', 33, 1, '4. Mantenimiento e Imagen'],
   ['c4-2', 'Imagen Exterior: ¿Iluminación y limpieza invitan a entrar?', 'si_no', 34, 1, '4. Mantenimiento e Imagen'],
-  ['c4-3', 'Wifi / A.C.: ¿Funcionan correctamente para el cliente?', 'si_no', 35, 1, '4. Mantenimiento e Imagen'],
+  ['c4-3', 'Wifi, A.C., música y TV: ¿Funcionan correctamente para el cliente?', 'si_no', 35, 1, '4. Mantenimiento e Imagen'],
+  ['c4-4', 'Estado drive thru: funcionando tres diademas', 'si_no', 36, 1, '4. Mantenimiento e Imagen'],
   // ——— 5. RECURSOS HUMANOS (Productividad) ———
-  ['c5-1', 'Plantilla vs. Venta: ¿Hay personal sobrado para la venta actual? (Impacto en Labor Cost).', 'si_no', 36, 1, '5. Recursos Humanos'],
-  ['c5-2', 'Uniformes y Presencia: Estándar de marca completo.', 'si_no', 37, 1, '5. Recursos Humanos'],
+  ['c5-1', 'Plantilla vs. Venta: ¿Hay personal sobrado para la venta actual? (Impacto en Labor Cost).', 'si_no', 37, 1, '5. Recursos Humanos'],
+  ['c5-2', 'Uniformes y Presencia: Estándar de marca completo.', 'si_no', 38, 1, '5. Recursos Humanos'],
   // ——— 6. DELIVERY Y AGREGADORES (Uber / DiDi / Rappi) ———
-  ['c6-1', 'Disponibilidad: ¿Todas las tabletas están encendidas y recibiendo pedidos?', 'si_no', 38, 1, '6. Delivery y Agregadores'],
-  ['c6-1a', 'Apps apagadas (especificar)', 'texto', 39, 0, '6. Delivery y Agregadores'],
-  ['c6-2', 'Auditoría de Cancelaciones: Revisar historial en tablet. ¿Hay cancelaciones manuales sospechosas hoy?', 'si_no', 40, 0, '6. Delivery y Agregadores'],
-  ['c6-2a', '# Cancelaciones hoy', 'numero', 41, 0, '6. Delivery y Agregadores'],
-  ['c6-3', 'Integridad del Pedido: ¿Salen con doble grapa/sticker de seguridad y ticket engrapado?', 'si_no', 42, 1, '6. Delivery y Agregadores'],
-  ['c6-4', 'Zona de Repartidores: ¿Está separada del comedor y limpia?', 'si_no', 43, 1, '6. Delivery y Agregadores'],
-  ['c6-5', 'Tiempo de Preparación: ¿El repartidor espera < 5 min?', 'si_no', 44, 0, '6. Delivery y Agregadores'],
-  ['c6-5a', 'Tiempo promedio (min)', 'numero', 45, 0, '6. Delivery y Agregadores'],
-  ['c6-6', 'Existencia Virtual: ¿El menú en la App coincide con la realidad? (Ej. Si no hay helado, ¿está bloqueado en la App?)', 'si_no', 46, 0, '6. Delivery y Agregadores'],
+  ['c6-1', 'Disponibilidad: ¿Todas las tabletas están encendidas y recibiendo pedidos?', 'si_no', 39, 1, '6. Delivery y Agregadores'],
+  ['c6-1a', 'Apps apagadas (especificar)', 'texto', 40, 0, '6. Delivery y Agregadores'],
+  ['c6-2', 'Auditoría de Cancelaciones: Revisar historial en tablet. ¿Hay cancelaciones manuales sospechosas hoy?', 'si_no', 41, 0, '6. Delivery y Agregadores'],
+  ['c6-2a', '# Cancelaciones hoy', 'numero', 42, 0, '6. Delivery y Agregadores'],
+  ['c6-3', 'Delivery y agregadores: ¿Salen con sticker de seguridad y ticket?', 'si_no', 43, 1, '6. Delivery y Agregadores'],
+  ['c6-4', 'Zona de Repartidores: ¿Está separada del comedor y limpia?', 'si_no', 44, 1, '6. Delivery y Agregadores'],
+  ['c6-5', 'Tiempo de Preparación: ¿El repartidor espera < 5 min?', 'si_no', 45, 0, '6. Delivery y Agregadores'],
+  ['c6-5a', 'Tiempo promedio (min)', 'numero', 46, 0, '6. Delivery y Agregadores'],
+  ['c6-6', 'Existencia Virtual: ¿El menú en la App coincide con la realidad? (Ej. Si no hay helado, ¿está bloqueado en la App?)', 'si_no', 47, 0, '6. Delivery y Agregadores'],
+  ['c6-7', 'Número de empleados', 'numero', 48, 0, '6. Delivery y Agregadores'],
+  ['c6-8', 'Número de gerentes', 'numero', 49, 0, '6. Delivery y Agregadores'],
   // ——— 7. MERCADOTECNIA E IMAGEN COMERCIAL ———
   // A. PRECIOS Y MENÚ BOARD
-  ['c7-1', 'Integridad del Menú: ¿Precios legibles y actualizados? (Sin parches de cinta ni cartones pegados).', 'si_no', 47, 1, '7A. Mercadotecnia: Precios y Menú Board'],
-  ['c7-2', 'Iluminación Menú: ¿Funcionan todas las luces/pantallas del Menú Board Interior y Drive Thru?', 'si_no', 48, 1, '7A. Mercadotecnia: Precios y Menú Board'],
-  ['c7-2a', 'Focos fundidos (especificar)', 'texto', 49, 0, '7A. Mercadotecnia: Precios y Menú Board'],
-  ['c7-3', 'Cruce de Precios: Validar 3 combos aleatorios. ¿El precio en el tablero coincide con el precio en la caja (POS)?', 'si_no', 50, 0, '7A. Mercadotecnia: Precios y Menú Board'],
+  ['c7-1', 'Integridad del Menú: ¿Precios legibles y actualizados? (Sin parches de cinta ni cartones pegados).', 'si_no', 50, 1, '7A. Mercadotecnia: Precios y Menú Board'],
+  ['c7-2', 'Iluminación Menú: ¿Funcionan todas las luces/pantallas del Menú Board Interior y Drive Thru?', 'si_no', 51, 1, '7A. Mercadotecnia: Precios y Menú Board'],
+  ['c7-2a', 'Focos fundidos (especificar)', 'texto', 52, 0, '7A. Mercadotecnia: Precios y Menú Board'],
+  ['c7-3', 'Cruce de Precios: Validar 3 combos aleatorios. ¿El precio en el tablero coincide con el precio en la caja (POS)?', 'si_no', 53, 0, '7A. Mercadotecnia: Precios y Menú Board'],
   // B. MATERIAL P.O.P. (Material Punto de Venta)
-  ['c7-4', 'Vigencia de Campaña: ¿Los posters, banners y transparencias corresponden a la campaña ACTUAL? (Ej. "Whopper Serrano").', 'si_no', 51, 1, '7B. Mercadotecnia: Material P.O.P.'],
-  ['c7-4a', 'Material vencido detectado (especificar)', 'texto', 52, 0, '7B. Mercadotecnia: Material P.O.P.'],
-  ['c7-5', 'Estado del Material: ¿Están en buen estado? (Sin esquinas despegadas, decolorados por el sol o rotos).', 'si_no', 53, 1, '7B. Mercadotecnia: Material P.O.P.'],
-  ['c7-6', 'Stopper/Habladores: ¿Están colocados en las cajas registradoras comunicando la promoción del mes?', 'si_no', 54, 1, '7B. Mercadotecnia: Material P.O.P.'],
+  ['c7-4', 'Vigencia de Campaña: ¿Los posters, banners y transparencias corresponden a la campaña ACTUAL? (Ej. "Whopper Serrano").', 'si_no', 54, 1, '7B. Mercadotecnia: Material P.O.P.'],
+  ['c7-4a', 'Material vencido detectado (especificar)', 'texto', 55, 0, '7B. Mercadotecnia: Material P.O.P.'],
+  ['c7-5', 'Estado del Material: ¿Están en buen estado? (Sin esquinas despegadas, decolorados por el sol o rotos).', 'si_no', 56, 1, '7B. Mercadotecnia: Material P.O.P.'],
+  ['c7-6', 'Stopper/Habladores: ¿Están colocados en las cajas registradoras comunicando la promoción del mes?', 'si_no', 57, 1, '7B. Mercadotecnia: Material P.O.P.'],
   // C. JUGUETES (KING JR / KIDS)
-  ['c7-7', 'Exhibidor (Fantasiero): ¿Está limpio, iluminado y lleno con los juguetes de la licencia actual?', 'si_no', 55, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
-  ['c7-8', 'Disponibilidad de Licencia: ¿Hay stock suficiente de la colección vigente en almacén?', 'si_no', 56, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
-  ['c7-8a', 'Licencia actual (especificar)', 'texto', 57, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
-  ['c7-9', 'Comunicación Visual: ¿Hay material gráfico del juguete visible para el niño a su altura?', 'si_no', 58, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
+  ['c7-7', 'Exhibidor (Juguetes): ¿Está limpio, iluminado y lleno con los juguetes de la licencia actual?', 'si_no', 58, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
+  ['c7-8', 'Disponibilidad de Licencia: ¿Hay stock suficiente de la colección vigente en almacén?', 'si_no', 59, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
+  ['c7-8a', 'Licencia actual (especificar)', 'texto', 60, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
+  ['c7-9', 'Comunicación Visual: ¿Hay material gráfico del juguete visible para el niño a su altura?', 'si_no', 61, 0, '7C. Mercadotecnia: Juguetes (King Jr)'],
   // D. PROMOCIONES Y CUPONES
-  ['c7-10', 'Conocimiento del Staff: Preguntar al cajero: "¿Cuál es la promo de la App hoy?". ¿Sabe responder?', 'si_no', 59, 0, '7D. Mercadotecnia: Promociones y Cupones'],
-  ['c7-11', 'Escaneo de Cupones: ¿El escáner de códigos QR de la App funciona correctamente?', 'si_no', 60, 0, '7D. Mercadotecnia: Promociones y Cupones'],
-  ['c7-12', 'Promociones Agresivas: Si hay "2x$" o "Combo del Día", ¿está marcado en el sistema o requieren llamar al gerente?', 'si_no', 61, 0, '7D. Mercadotecnia: Promociones y Cupones'],
+  ['c7-10', 'Conocimiento del Staff: Preguntar al cajero: "¿Cuál es la promo de la App hoy?". ¿Sabe responder?', 'si_no', 62, 0, '7D. Mercadotecnia: Promociones y Cupones'],
+  ['c7-11', 'Escaneo de Cupones: ¿El escáner de códigos QR de la App funciona correctamente?', 'si_no', 63, 0, '7D. Mercadotecnia: Promociones y Cupones'],
+  ['c7-12', 'Promociones Agresivas: Si hay "2x$" o "Combo del Día", ¿está marcado en el sistema o requieren llamar al gerente?', 'si_no', 64, 0, '7D. Mercadotecnia: Promociones y Cupones'],
   // ——— Evidencia y cierre ———
-  ['c8', 'Evidencia fotográfica', 'foto', 62, 0, null],
-  ['c9', 'Observaciones generales', 'texto', 63, 0, null],
+  ['c8', 'Evidencia fotográfica', 'foto', 65, 0, null],
+  ['c9', 'Observaciones generales', 'texto', 66, 0, null],
 ];
 
 const countChk = db.get('SELECT COUNT(*) as c FROM checklist_plantilla');
@@ -192,7 +195,7 @@ const countVisitas = db.get('SELECT COUNT(*) as c FROM visita_respuestas');
 const hasOldChecklist = db.get("SELECT 1 FROM checklist_plantilla WHERE titulo LIKE '%Limpieza y orden%' OR titulo LIKE '%Atención al cliente%' LIMIT 1");
 const runSeed = countChk.c === 0 ||
   (hasOldChecklist && countVisitas.c === 0) ||
-  ([8, 39, 41, 50, 56, 63].includes(countChk.c) && countVisitas.c === 0);
+  ([8, 39, 41, 50, 56, 63, 64, 66].includes(countChk.c) && countVisitas.c === 0);
 if (runSeed) {
   if (countChk.c > 0) db.exec('DELETE FROM checklist_plantilla');
   for (const row of CHECKLIST_INTEGRAL) {
@@ -209,6 +212,60 @@ for (const row of CHECKLIST_INTEGRAL) {
     } catch (_) {}
   }
 }
+// Migración: OSAT escala 1-5 en Burger King (ej. 4.9 en vez de 85%)
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['OSAT: Meta / Objetivo (ej. 4.9)', 'c1-1m']);
+} catch (_) {}
+// Migración: Resultado Auditoría Meta >95%
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Resultado Global Auditoría: Dato actual (%) — Meta >95%', 'c1-5']);
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Resultado Auditoría: Desviación permitida (ej. >95%)', 'c1-5m']);
+} catch (_) {}
+// Migración: Días de Inventario Meta 14 días
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Días de Inventario: Dato actual — Meta 14 días', 'c1-6']);
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Inventario: Desviación permitida (ej. max 3 dias)', 'c1-6m']);
+} catch (_) {}
+// Migración: Validación de Faltantes Críticos (sin Arguilea)
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Validación de Faltantes Críticos', 'c2-1']);
+} catch (_) {}
+// Migración: Registro de Mermas (sin Waste)
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Registro de Mermas: ¿Se está pesando/contando la merma real o solo se digita?', 'c2-2']);
+} catch (_) {}
+// Migración: Verificar proceso de elaboración de productos
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Verificar proceso de elaboración de productos', 'c2-3']);
+} catch (_) {}
+// Migración: Productos químicos bajo llave y almacenes cerrados
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Todos los productos químicos están bajo llave y almacenes cerrados', 'c2-4']);
+} catch (_) {}
+// Migración: Temp. Carne con °C y °F
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Temp. Carne (°C / °F)', 'c3-2']);
+} catch (_) {}
+// Migración: Exactitud de la Orden - 1 bolsa
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Exactitud de la Orden: Revisar 1 bolsa de entrega. ¿Está completa y con servilletas?', 'c3-5']);
+} catch (_) {}
+// Migración: Equipos Críticos - agregar equipos de refrigeración
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Equipos Críticos: ¿Funcionan al 100%? (Broiler, Freidoras, Helado y equipos de refrigeración).', 'c4-1']);
+} catch (_) {}
+// Migración: Wifi, A.C., música y TV
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Wifi, A.C., música y TV: ¿Funcionan correctamente para el cliente?', 'c4-3']);
+} catch (_) {}
+// Migración: Delivery y agregadores - sticker y ticket
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Delivery y agregadores: ¿Salen con sticker de seguridad y ticket?', 'c6-3']);
+} catch (_) {}
+// Migración: Exhibidor (Juguetes) en vez de Fantasiero
+try {
+  db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Exhibidor (Juguetes): ¿Está limpio, iluminado y lleno con los juguetes de la licencia actual?', 'c7-7']);
+} catch (_) {}
 if (!runSeed) {
   // Migración: insertar cualquier ítem de CHECKLIST_INTEGRAL que falte (DBs antiguas o parciales)
   for (const row of CHECKLIST_INTEGRAL) {

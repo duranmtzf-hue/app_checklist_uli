@@ -90,6 +90,8 @@ export default function VisitaDetalle() {
   }
 
   const respuestas = visita.respuestas || [];
+  const progressPercent = visita.progress_percent ?? 100;
+  const canDownloadPDF = progressPercent >= 80;
   const siCumple = respuestas.filter(r => r.tipo === 'si_no' && r.valor_si_no === 1);
   const noCumple = respuestas.filter(r => r.tipo === 'si_no' && r.valor_si_no === 0);
 
@@ -111,10 +113,15 @@ export default function VisitaDetalle() {
       </div>
 
       <div className="flex flex-col gap-2">
+        {!canDownloadPDF && (
+          <p className="text-sm font-medium" style={{ color: 'var(--warning)' }}>
+            <i className="fas fa-exclamation-triangle mr-1" /> Se requiere al menos 80% del checklist completado para descargar el PDF ({progressPercent}%).
+          </p>
+        )}
         <button
           type="button"
           onClick={handleDescargarPDF}
-          disabled={downloadingPDF || id?.startsWith('offline-')}
+          disabled={downloadingPDF || id?.startsWith('offline-') || !canDownloadPDF}
           className="btn btn-primary flex-1"
         >
           <i className={`fas ${downloadingPDF ? 'fa-spinner fa-spin' : 'fa-file-pdf'}`} />
