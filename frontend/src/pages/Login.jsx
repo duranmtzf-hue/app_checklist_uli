@@ -52,18 +52,16 @@ export default function Login() {
         <button type="button" onClick={toggleDark} className="toggle-dark" title={dark ? 'Modo claro' : 'Modo oscuro'} />
       </div>
       <div
-        className="w-full max-w-md md:max-w-lg mx-auto rounded-[24px] p-6 sm:p-8 md:p-10 animate-scale-in flex flex-col"
+        className="w-full max-w-md md:max-w-lg mx-auto rounded-[24px] p-6 sm:p-8 md:p-10 animate-scale-in flex flex-col bg-transparent"
         style={{
-          background: 'var(--header-bg)',
-          backdropFilter: 'blur(20px)',
-          boxShadow: 'var(--shadow-lg)',
-          border: '1px solid var(--header-border)',
+          boxShadow: 'none',
+          border: 'none',
         }}
       >
         <div className="text-center mb-6 sm:mb-8 flex-shrink-0">
           <div className="flex flex-col items-center gap-4 mb-2">
             <div
-              className="w-[min(160px,35vw)] h-[min(160px,35vw)] min-w-[100px] min-h-[100px] flex items-center justify-center"
+              className="w-[min(160px,35vw)] h-[min(160px,35vw)] min-w-[100px] min-h-[100px] flex items-center justify-center bg-transparent"
               aria-hidden
             >
               <img
