@@ -240,6 +240,7 @@ export async function generarPDFVisita(visita) {
   }
   const ordenSeccion = [
     'Datos de la Visita',
+    '1. Ventas',
     '1A. Pre-work: Satisfacción (Qualtrics)',
     '1B. Pre-work: Costos y Control (Arguilea)',
     '2. Validación Financiera en Campo',
@@ -251,6 +252,7 @@ export async function generarPDFVisita(visita) {
     '7B. Mercadotecnia: Material P.O.P.',
     '7C. Mercadotecnia: Juguetes (King Jr)',
     '7D. Mercadotecnia: Promociones y Cupones',
+    '8. Promociones',
     'Otros',
   ];
   const seccionesOrd = ordenSeccion.filter(s => bySeccion[s]?.length);
