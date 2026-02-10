@@ -111,6 +111,12 @@ const CHECKLIST_INTEGRAL = [
   // ——— DATOS DE LA VISITA (Información General) ———
   ['dato-foto-sucursal', 'Evidencia fotográfica de la sucursal', 'foto', 0, 0, 'Datos de la Visita'],
   // ——— 1. PRE-WORK: INDICADORES CLAVE ———
+  // VENTAS
+  ['ventas-va', 'Venta Actual Acumulada', 'texto', -5, 0, '1. Ventas'],
+  ['ventas-vaa', 'Venta Año Anterior Acumulado', 'texto', -4, 0, '1. Ventas'],
+  ['ventas-bg', 'Brecha(Gap)', 'texto', -3, 0, '1. Ventas'],
+  ['ventas-pd', 'porcentaje de diferencia', 'porcentaje', -2, 0, '1. Ventas'],
+  ['ventas-c', 'cumplimiento', 'texto', -1, 0, '1. Ventas'],
   // A. SATISFACCIÓN (QUALTRICS) — Dato Actual | Meta/Objetivo | Estatus
   ['c1-1', 'OSAT (Satisfacción General): Dato actual (%)', 'porcentaje', 1, 1, '1A. Pre-work: Satisfacción (Qualtrics)'],
   ['c1-1e', 'OSAT Estatus (🟢🟡🔴)', 'estatus', 2, 0, '1A. Pre-work: Satisfacción (Qualtrics)'],
@@ -266,6 +272,23 @@ try {
     db.run('UPDATE checklist_plantilla SET orden = orden + 1 WHERE orden >= 39 AND id != ?', ['c4-5']);
   }
 } catch (_) {}
+// Migración: agregar sección Ventas (ventas-va, ventas-vaa, ventas-bg, ventas-pd, ventas-c)
+const VENTAS_ITEMS = [
+  ['ventas-va', 'Venta Actual Acumulada', 'texto', -5, 0, '1. Ventas'],
+  ['ventas-vaa', 'Venta Año Anterior Acumulado', 'texto', -4, 0, '1. Ventas'],
+  ['ventas-bg', 'Brecha(Gap)', 'texto', -3, 0, '1. Ventas'],
+  ['ventas-pd', 'porcentaje de diferencia', 'porcentaje', -2, 0, '1. Ventas'],
+  ['ventas-c', 'cumplimiento', 'texto', -1, 0, '1. Ventas'],
+];
+for (const row of VENTAS_ITEMS) {
+  try {
+    const exists = db.get('SELECT 1 FROM checklist_plantilla WHERE id = ?', [row[0]]);
+    if (!exists) {
+      db.run('INSERT INTO checklist_plantilla (id, titulo, tipo, orden, obligatorio, seccion) VALUES (?, ?, ?, ?, ?, ?)',
+        [row[0], row[1], row[2], row[3], row[4], row[5]]);
+    }
+  } catch (_) {}
+}
 // Migración: Resultado Auditoría Meta >95%
 try {
   db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Resultado Global Auditoría: Dato actual (%) — Meta >95%', 'c1-5']);

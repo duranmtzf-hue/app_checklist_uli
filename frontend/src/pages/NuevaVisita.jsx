@@ -24,7 +24,7 @@ const SECTIONS = [
 
 const SECTION_MAP = {
   datos: ['Datos de la Visita'],
-  prework: ['1A. Pre-work: Satisfacción (Qualtrics)', '1B. Pre-work: Costos y Control (Arguilea)'],
+  prework: ['1. Ventas', '1A. Pre-work: Satisfacción (Qualtrics)', '1B. Pre-work: Costos y Control (Arguilea)'],
   financiera: ['2. Validación Financiera en Campo'],
   calidad: ['3. Calidad y Experiencia (Qualtrics)'],
   mantenimiento: ['4. Mantenimiento e Imagen'],
@@ -493,7 +493,17 @@ export default function NuevaVisita() {
             <div className="chk-card card-audit space-y-6">
               <h3 className="chk-section-title font-bold flex items-center gap-2"><i className="fas fa-chart-bar" /> Pre-work: Indicadores Clave</h3>
               <p className="text-[var(--text-muted)] text-sm">Llenar antes de entrar a piso. Si los números están mal, la visita es de corrección inmediata.</p>
-              {getItemsForSection('prework').length > 0 ? getItemsForSection('prework').map(renderItem) : (
+              {getItemsForSection('prework').length > 0 ? (
+                <>
+                  {getItemsForSection('prework').filter(p => p.seccion === '1. Ventas').length > 0 && (
+                    <div className="space-y-4">
+                      <h4 className="font-semibold text-[var(--primary)]">Ventas</h4>
+                      {getItemsForSection('prework').filter(p => p.seccion === '1. Ventas').map(renderItem)}
+                    </div>
+                  )}
+                  {getItemsForSection('prework').filter(p => p.seccion !== '1. Ventas').map(renderItem)}
+                </>
+              ) : (
                 <p className="text-[var(--text-muted)] text-sm py-4">Recarga la página para cargar las preguntas de esta sección.</p>
               )}
             </div>
