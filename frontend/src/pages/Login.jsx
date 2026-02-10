@@ -34,8 +34,8 @@ export default function Login() {
 
   return (
     <div
-      className="min-h-dvh flex flex-col justify-center px-4 sm:px-6 md:px-8 py-8 transition-colors duration-300"
-      style={{ background: 'var(--bg)', paddingTop: 'max(2rem, env(safe-area-inset-top))' }}
+      className="min-h-dvh flex flex-col justify-center items-stretch px-4 sm:px-6 md:px-8 py-6 sm:py-8 transition-colors duration-300"
+      style={{ background: 'var(--bg)', paddingTop: 'max(2rem, env(safe-area-inset-top))', paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}
     >
       <div className="fixed top-4 right-4 z-10 flex items-center gap-2">
         {isInstallable && !isInstalled && (
@@ -52,7 +52,7 @@ export default function Login() {
         <button type="button" onClick={toggleDark} className="toggle-dark" title={dark ? 'Modo claro' : 'Modo oscuro'} />
       </div>
       <div
-        className="w-full max-w-md mx-auto rounded-[24px] p-6 sm:p-8 animate-scale-in"
+        className="w-full max-w-md md:max-w-lg mx-auto rounded-[24px] p-6 sm:p-8 md:p-10 animate-scale-in flex flex-col"
         style={{
           background: 'var(--header-bg)',
           backdropFilter: 'blur(20px)',
@@ -60,16 +60,21 @@ export default function Login() {
           border: '1px solid var(--header-border)',
         }}
       >
-        <div className="text-center mb-8">
-          <div className="flex flex-col items-center gap-3 mb-2">
-            <img
-              src="/logo.png"
-              alt="APP Checklist"
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-contain shadow-xl"
-            />
-            <span className="text-2xl font-extrabold text-[var(--primary)]">APP Checklist</span>
+        <div className="text-center mb-6 sm:mb-8 flex-shrink-0">
+          <div className="flex flex-col items-center gap-4 mb-2">
+            <div
+              className="w-[min(160px,35vw)] h-[min(160px,35vw)] min-w-[100px] min-h-[100px] flex items-center justify-center"
+              aria-hidden
+            >
+              <img
+                src="/logo.png"
+                alt="APP Checklist"
+                className="w-full h-full object-contain object-center"
+              />
+            </div>
+            <span className="text-2xl sm:text-3xl font-extrabold text-[var(--primary)]">APP Checklist</span>
           </div>
-          <p className="text-[var(--text-muted)]">Sistema de auditorías móviles</p>
+          <p className="text-[var(--text-muted)] text-sm sm:text-base">Sistema de auditorías móviles</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
