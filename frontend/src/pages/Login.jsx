@@ -58,21 +58,17 @@ export default function Login() {
           border: 'none',
         }}
       >
-        <div className="text-center mb-6 sm:mb-8 flex-shrink-0">
-          <div className="flex flex-col items-center gap-4 mb-2">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-2">
             <div
-              className="w-[min(160px,35vw)] h-[min(160px,35vw)] min-w-[100px] min-h-[100px] flex items-center justify-center bg-transparent"
-              aria-hidden
+              className="w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl shadow-lg"
+              style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-light))' }}
             >
-              <img
-                src="/logo.png"
-                alt="APP Checklist"
-                className="w-full h-full object-contain object-center mix-blend-screen"
-              />
+              <i className="fas fa-clipboard-check" />
             </div>
-            <span className="text-2xl sm:text-3xl font-extrabold text-[var(--primary)]">APP Checklist</span>
+            <span className="text-2xl font-extrabold text-[var(--primary)]">APP Checklist</span>
           </div>
-          <p className="text-[var(--text-muted)] text-sm sm:text-base">Sistema de auditorías móviles</p>
+          <p className="text-[var(--text-muted)]">Sistema de auditorías móviles</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
