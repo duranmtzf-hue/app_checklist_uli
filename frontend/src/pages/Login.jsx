@@ -67,7 +67,7 @@ export default function Login() {
               <img
                 src="/logo.png"
                 alt="APP Checklist"
-                className="w-full h-full object-contain object-center"
+                className="w-full h-full object-contain object-center mix-blend-screen"
               />
             </div>
             <span className="text-2xl sm:text-3xl font-extrabold text-[var(--primary)]">APP Checklist</span>
