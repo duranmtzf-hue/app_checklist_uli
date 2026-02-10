@@ -164,7 +164,7 @@ export default function VisitaDetalle() {
         </ul>
       </section>
 
-      {respuestas.filter(r => r.valor_texto || r.valor_numero != null || r.valor_porcentaje != null).length > 0 && (
+      {respuestas.filter(r => r.tipo !== 'si_no' && (r.valor_texto || r.valor_numero != null || r.valor_porcentaje != null || r.valor_foto_path)).length > 0 && (
         <section>
           <h2 className="font-semibold text-[var(--text)] mb-2">Datos y observaciones</h2>
           <div className="card-audit space-y-3">
@@ -174,7 +174,8 @@ export default function VisitaDetalle() {
               if (r.tipo === 'estatus' && r.valor_numero != null) {
                 val = r.valor_numero === 1 ? '🟢' : r.valor_numero === 2 ? '🟡' : r.valor_numero === 3 ? '🔴' : r.valor_numero;
               } else if (val == null && r.valor_numero != null) val = r.valor_numero;
-              if (val == null) return null;
+              if (r.tipo === 'foto' && r.valor_foto_path) val = 'Foto adjunta';
+              if (val == null && !r.valor_foto_path) return null;
               return (
                 <p key={r.id} className="flex justify-between items-start gap-4">
                   <span className="text-[var(--text-muted)] text-sm">{r.titulo}</span>

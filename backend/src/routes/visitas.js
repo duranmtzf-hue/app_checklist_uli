@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import { db } from '../db.js';
-import { authMiddleware } from '../auth.js';
+import { authMiddleware, hashPassword } from '../auth.js';
 import { randomUUID } from 'crypto';
 import { generarPDFVisita } from '../pdfVisita.js';
 
@@ -125,6 +125,22 @@ router.post('/', (req, res) => {
   try {
     const { sucursal_id, fecha, plan_accion, gerente, plan_financiero, plan_experiencia, plan_operativo, respuestas, estado } = req.body;
     if (!sucursal_id) return res.status(400).json({ error: 'sucursal_id requerido' });
+    const userId = req.user?.id ?? req.user?.sub;
+    if (!userId) return res.status(401).json({ error: 'Sesión inválida. Cierre sesión y vuelva a entrar.' });
+    let userExists = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+    if (!userExists) {
+      const role = (req.user?.role && ['evaluador','gerente','regional','admin'].includes(req.user.role)) ? req.user.role : 'evaluador';
+      const placeholderEmail = `sync-${String(userId).replace(/-/g, '')}@app.local`;
+      try {
+        db.prepare(
+          'INSERT INTO users (id, email, password_hash, name, role) VALUES (?, ?, ?, ?, ?)'
+        ).run(userId, placeholderEmail, hashPassword(randomUUID()), 'Usuario', role);
+      } catch (e) {
+        if (!e.message?.includes('UNIQUE')) throw e;
+      }
+      userExists = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+      if (!userExists) return res.status(400).json({ error: 'No se pudo registrar la sesión. Intente de nuevo.' });
+    }
     const sucExists = db.prepare('SELECT id FROM sucursales WHERE id = ?').get(sucursal_id);
     if (!sucExists) return res.status(400).json({ error: 'Sucursal no válida. Seleccione otra sucursal o recargue la página.' });
     const id = randomUUID();
@@ -140,7 +156,7 @@ router.post('/', (req, res) => {
     db.prepare(`
       INSERT INTO visitas (id, usuario_id, sucursal_id, fecha, estado, plan_accion, gerente, plan_financiero, plan_experiencia, plan_operativo)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(id, req.user.id, sucursal_id, fechaVal, estadoVal, plan_accion || null, gerente || null, plan_financiero || null, plan_experiencia || null, plan_operativo || null);
+    `).run(id, userId, sucursal_id, fechaVal, estadoVal, plan_accion || null, gerente || null, plan_financiero || null, plan_experiencia || null, plan_operativo || null);
 
     if (Array.isArray(respuestas)) {
       const validIds = new Set(db.prepare('SELECT id FROM checklist_plantilla').all().map((row) => row.id));
@@ -166,6 +182,10 @@ router.post('/', (req, res) => {
     res.status(201).json(visita);
   } catch (err) {
     console.error('POST /visitas:', err);
+    const isFk = err.message && String(err.message).toLowerCase().includes('foreign key');
+    if (isFk) {
+      return res.status(400).json({ error: 'Datos no válidos (sucursal o usuario). Recargue la página, vuelva a elegir sucursal e intente de nuevo.' });
+    }
     res.status(500).json({ error: err.message || 'Error al crear visita' });
   }
 });
@@ -223,6 +243,10 @@ router.put('/:id', (req, res) => {
     res.json(updated);
   } catch (err) {
     console.error('PUT /visitas:', err);
+    const isFk = err.message && String(err.message).toLowerCase().includes('foreign key');
+    if (isFk) {
+      return res.status(400).json({ error: 'Datos no válidos (sucursal o checklist). Recargue la página e intente de nuevo.' });
+    }
     res.status(500).json({ error: err.message || 'Error al actualizar visita' });
   }
 });

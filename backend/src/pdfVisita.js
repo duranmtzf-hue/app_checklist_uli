@@ -14,6 +14,14 @@ const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
 const LINE_HEIGHT = 14;
 const MIN_Y = MARGIN + 40;
 const BLUE = { r: 0.18, g: 0.31, b: 0.65 };    // Azul moderno (#2E5090)
+
+/** Convierte texto a caracteres que la fuente PDF (WinAnsi) puede mostrar. Evita error "WinAnsi cannot encode". */
+function toWinAnsi(str) {
+  if (str == null) return '';
+  let s = String(str);
+  s = s.replace(/\u{1F7E2}/gu, '[Verde]').replace(/\u{1F7E1}/gu, '[Amarillo]').replace(/\u{1F534}/gu, '[Rojo]');
+  return s.replace(/[^\x20-\x7E\xA0-\xFF]/g, '').trim() || '';
+}
 const GOLD = { r: 0.95, g: 0.77, b: 0.2 };     // Dorado vibrante (#F2C43D)
 const WHITE = { r: 1, g: 1, b: 1 };
 const DARK = { r: 0.11, g: 0.13, b: 0.16 };
@@ -25,7 +33,7 @@ const WARNING = { r: 0.9, g: 0.45, b: 0.1 };
  * Envuelve texto para que no exceda maxWidth. Devuelve array de líneas.
  */
 function wrapText(text, font, fontSize, maxWidth) {
-  const str = String(text ?? '').trim();
+  const str = toWinAnsi(text);
   if (!str) return [''];
   const safeWidth = Math.max(30, maxWidth);
   const lines = [];
@@ -100,7 +108,7 @@ export async function generarPDFVisita(visita) {
   const drawText = (text, opts = {}) => {
     const { size = 10, bold = false, color = DARK, maxW = CONTENT_WIDTH - 20 } = opts;
     const font = bold ? helveticaBold : helvetica;
-    const lines = wrapText(text, font, size, maxW);
+    const lines = wrapText(toWinAnsi(text), font, size, maxW);
     const lineH = Math.max(LINE_HEIGHT, size + 4);
     for (const ln of lines) {
       addPageIfNeeded(lineH + 4);
@@ -132,7 +140,7 @@ export async function generarPDFVisita(visita) {
       height: 30,
       color: rgb(0.98, 0.98, 0.99),
     });
-    page.drawText(title, {
+    page.drawText(toWinAnsi(title), {
       x: MARGIN + 16,
       y: y - 21,
       size: 12,
@@ -158,14 +166,14 @@ export async function generarPDFVisita(visita) {
     height: 3,
     color: rgb(GOLD.r, GOLD.g, GOLD.b),
   });
-  page.drawText('REPORTE DE VISITA', {
+  page.drawText(toWinAnsi('REPORTE DE VISITA'), {
     x: MARGIN,
     y: PAGE_HEIGHT - 42,
     size: 24,
     font: helveticaBold,
     color: rgb(WHITE.r, WHITE.g, WHITE.b),
   });
-  page.drawText('Checklist Integral de Gestión · Burger King', {
+  page.drawText(toWinAnsi('Checklist Integral de Gestión · Burger King'), {
     x: MARGIN,
     y: PAGE_HEIGHT - 62,
     size: 11,
@@ -177,11 +185,11 @@ export async function generarPDFVisita(visita) {
   // ——— DATOS DE LA VISITA ———
   drawSection('DATOS DE LA VISITA');
   const datos = [
-    `Sucursal: ${visita.sucursal_nombre || '-'}`,
-    `Regional: ${visita.regional_nombre || '-'}  |  Distrito: ${visita.distrito_nombre || '-'}`,
-    `Fecha: ${formatearFecha(visita.fecha)}`,
-    `Gerente: ${visita.gerente || '-'}`,
-    `Evaluador: Ulises Sanchez`,
+    `Sucursal: ${toWinAnsi(visita.sucursal_nombre) || '-'}`,
+    `Regional: ${toWinAnsi(visita.regional_nombre) || '-'}  |  Distrito: ${toWinAnsi(visita.distrito_nombre) || '-'}`,
+    `Fecha: ${toWinAnsi(formatearFecha(visita.fecha))}`,
+    `Gerente: ${toWinAnsi(visita.gerente) || '-'}`,
+    `Evaluador: ${toWinAnsi(visita.usuario_nombre) || 'Ulises Sanchez'}`,
   ];
   for (const d of datos) drawText(d, { size: 10, color: DARK });
   y -= 12;
@@ -199,7 +207,7 @@ export async function generarPDFVisita(visita) {
     color: rgb(SUCCESS.r, SUCCESS.g, SUCCESS.b),
     opacity: 0.12,
   });
-  page.drawText(`Cumplió: ${siCumple.length} ítems`, {
+  page.drawText(toWinAnsi(`Cumplió: ${siCumple.length} ítems`), {
     x: MARGIN + 12,
     y: y - 18,
     size: 11,
@@ -214,7 +222,7 @@ export async function generarPDFVisita(visita) {
     color: rgb(WARNING.r, WARNING.g, WARNING.b),
     opacity: 0.12,
   });
-  page.drawText(`No cumplió: ${noCumple.length} ítems`, {
+  page.drawText(toWinAnsi(`No cumplió: ${noCumple.length} ítems`), {
     x: MARGIN + CONTENT_WIDTH / 2 + 20,
     y: y - 18,
     size: 11,
@@ -231,6 +239,7 @@ export async function generarPDFVisita(visita) {
     bySeccion[sec].push(r);
   }
   const ordenSeccion = [
+    'Datos de la Visita',
     '1A. Pre-work: Satisfacción (Qualtrics)',
     '1B. Pre-work: Costos y Control (Arguilea)',
     '2. Validación Financiera en Campo',
@@ -252,7 +261,7 @@ export async function generarPDFVisita(visita) {
     drawSection(seccion);
     for (const r of items) {
       const valor = valorRespuesta(r);
-      const titulo = (r.titulo || '').slice(0, 300);
+      const titulo = toWinAnsi((r.titulo || '').slice(0, 300));
       drawText(titulo, { size: 8, color: GRAY, maxW: CONTENT_WIDTH - 80 });
       if (r.tipo === 'foto' && r.valor_foto_path && !String(r.valor_foto_path).startsWith('blob:')) {
         try {
@@ -294,10 +303,10 @@ export async function generarPDFVisita(visita) {
           drawText('  Evidencia fotográfica: (error al cargar imagen)', { size: 8, color: GRAY });
         }
       } else if (valor != null) {
-        drawText(`  Respuesta: ${String(valor).slice(0, 200)}`, { size: 8, bold: true });
+        drawText(`  Respuesta: ${toWinAnsi(String(valor)).slice(0, 200)}`, { size: 8, bold: true });
       }
       if (r.observaciones) {
-        drawText(`  Obs: ${String(r.observaciones).slice(0, 300)}`, { size: 7, color: GRAY });
+        drawText(`  Obs: ${toWinAnsi(String(r.observaciones)).slice(0, 300)}`, { size: 7, color: GRAY });
       }
       y -= 2;
     }
@@ -315,7 +324,7 @@ export async function generarPDFVisita(visita) {
     ].filter(p => p.text);
     for (const { label, text } of planes) {
       addPageIfNeeded(30);
-      page.drawText(label, {
+      page.drawText(toWinAnsi(label), {
         x: MARGIN + 10,
         y: y - 8,
         size: 9,
@@ -323,7 +332,7 @@ export async function generarPDFVisita(visita) {
         color: rgb(BLUE.r, BLUE.g, BLUE.b),
       });
       y -= 16;
-      drawText(String(text).slice(0, 1500), { size: 9, maxW: CONTENT_WIDTH - 24 });
+      drawText(toWinAnsi(String(text)).slice(0, 1500), { size: 9, maxW: CONTENT_WIDTH - 24 });
       y -= 8;
     }
     addPageIfNeeded(50);
@@ -337,7 +346,7 @@ export async function generarPDFVisita(visita) {
   for (let i = 0; i < totalPages; i++) {
     const p = doc.getPage(i);
     const footer = `Página ${i + 1} de ${totalPages}  ·  ${new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })}  ·  APP Checklist`;
-    p.drawText(footer, {
+    p.drawText(toWinAnsi(footer), {
       x: MARGIN,
       y: 24,
       size: 7,

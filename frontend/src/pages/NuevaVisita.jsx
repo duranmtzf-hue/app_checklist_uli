@@ -5,7 +5,7 @@ import { useAuth } from '../AuthContext';
 import { isOnline, guardarVisitaOffline, getCache, setCache, guardarDraftOffline, obtenerDraftOffline, limpiarDraftOffline } from '../store';
 
 const CACHE_KEY_REG = 'regionales';
-const CACHE_KEY_PLANTILLA = 'checklist_plantilla_v3';
+const CACHE_KEY_PLANTILLA = 'checklist_plantilla_v4';
 const cacheDistritosKey = (regionalId) => `distritos_${regionalId}`;
 const cacheSucursalesKey = (distritoId) => `sucursales_${distritoId}`;
 
@@ -23,6 +23,7 @@ const SECTIONS = [
 ];
 
 const SECTION_MAP = {
+  datos: ['Datos de la Visita'],
   prework: ['1A. Pre-work: Satisfacción (Qualtrics)', '1B. Pre-work: Costos y Control (Arguilea)'],
   financiera: ['2. Validación Financiera en Campo'],
   calidad: ['3. Calidad y Experiencia (Qualtrics)'],
@@ -31,6 +32,8 @@ const SECTION_MAP = {
   delivery: ['6. Delivery y Agregadores'],
   marketing: ['7A. Mercadotecnia: Precios y Menú Board', '7B. Mercadotecnia: Material P.O.P.', '7C. Mercadotecnia: Juguetes (King Jr)', '7D. Mercadotecnia: Promociones y Cupones', 'Otros'],
 };
+
+const FOTO_SUCURSAL_ITEM = { id: 'dato-foto-sucursal', titulo: 'Evidencia fotográfica de la sucursal', tipo: 'foto', obligatorio: 0 };
 
 export default function NuevaVisita() {
   const navigate = useNavigate();
@@ -162,7 +165,7 @@ export default function NuevaVisita() {
   };
 
   const buildRespuestas = () => {
-    return plantilla.map(item => ({
+    const base = plantilla.map(item => ({
       item_id: item.id,
       valor_si_no: item.tipo === 'si_no' ? (respuestas[item.id]?.valor_si_no === 1 || respuestas[item.id]?.valor_si_no === true ? 1 : respuestas[item.id]?.valor_si_no === 0 || respuestas[item.id]?.valor_si_no === false ? 0 : null) : null,
       valor_texto: item.tipo === 'texto' ? respuestas[item.id]?.valor_texto : null,
@@ -171,6 +174,19 @@ export default function NuevaVisita() {
       valor_foto_path: item.tipo === 'foto' ? (fotos[item.id] && !String(fotos[item.id]).startsWith('blob:') ? fotos[item.id] : null) : null,
       observaciones: respuestas[item.id]?.observaciones ?? null,
     }));
+    const tieneFotoSucursal = base.some(r => r.item_id === 'dato-foto-sucursal');
+    if (!tieneFotoSucursal) {
+      base.unshift({
+        item_id: 'dato-foto-sucursal',
+        valor_si_no: null,
+        valor_texto: null,
+        valor_numero: null,
+        valor_porcentaje: null,
+        valor_foto_path: fotos['dato-foto-sucursal'] && !String(fotos['dato-foto-sucursal']).startsWith('blob:') ? fotos['dato-foto-sucursal'] : null,
+        observaciones: respuestas['dato-foto-sucursal']?.observaciones ?? null,
+      });
+    }
+    return base;
   };
 
   const buildPayload = (estado = 'completada') => ({
@@ -463,6 +479,10 @@ export default function NuevaVisita() {
                   <label className="block font-semibold text-[var(--text)] mb-2">Gerente</label>
                   <input type="text" className="chk-input" placeholder="Nombre del gerente" value={gerente} onChange={e => setGerente(e.target.value)} />
                 </div>
+              </div>
+              <div>
+                <h4 className="chk-section-title font-semibold mb-3">Evidencia fotográfica de la sucursal</h4>
+                {renderItem(FOTO_SUCURSAL_ITEM)}
               </div>
               <p className="text-sm text-[var(--text-muted)]">Evaluador: <strong>Ulises Sanchez</strong></p>
               <p className="text-sm text-[var(--text-muted)]">Fecha: <strong>{new Date().toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' })}</strong></p>
