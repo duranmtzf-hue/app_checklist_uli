@@ -41,13 +41,14 @@ export default function Layout() {
           borderBottom: '1px solid var(--header-border)',
         }}
       >
-        <div className="flex items-center gap-3 min-w-0">
-          <img
-            src="/logo.png"
-            alt="APP Checklist"
-            className="w-11 h-11 shrink-0 rounded-xl object-contain shadow-lg"
-          />
-          <span className="font-extrabold text-lg text-[var(--primary)] truncate">APP Checklist</span>
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white shadow-lg"
+            style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-light))' }}
+          >
+            <i className="fas fa-clipboard-check" />
+          </div>
+          <span className="font-extrabold text-lg text-[var(--primary)]">APP Checklist</span>
         </div>
         <div className="flex items-center gap-2">
           {isInstallable && !isInstalled && (
