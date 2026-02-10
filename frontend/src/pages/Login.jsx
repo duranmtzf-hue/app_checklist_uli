@@ -61,13 +61,12 @@ export default function Login() {
         }}
       >
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <div
-              className="w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl shadow-lg"
-              style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-light))' }}
-            >
-              <i className="fas fa-clipboard-check" />
-            </div>
+          <div className="flex flex-col items-center gap-3 mb-2">
+            <img
+              src="/logo.png"
+              alt="APP Checklist"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-contain shadow-xl"
+            />
             <span className="text-2xl font-extrabold text-[var(--primary)]">APP Checklist</span>
           </div>
           <p className="text-[var(--text-muted)]">Sistema de auditorías móviles</p>
