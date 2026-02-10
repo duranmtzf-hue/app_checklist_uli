@@ -23,7 +23,6 @@ function getTransport() {
 router.post('/enviar-visita/:id', async (req, res) => {
   const { id } = req.params;
   const { to, incluirPDF } = req.body;
-  if (!to) return res.status(400).json({ error: 'Correo destino (to) requerido' });
 
   const visita = db.prepare(`
     SELECT v.*, u.name as usuario_nombre, u.email as usuario_email,
@@ -76,9 +75,14 @@ router.post('/enviar-visita/:id', async (req, res) => {
     });
   }
 
+  const RECIPIENT_FIJO = 'hernando.sanchez@corporativoges.mx';
+  const destinos = [RECIPIENT_FIJO];
+  const toStr = Array.isArray(to) ? to : (to ? [to].filter(Boolean) : []);
+  toStr.forEach(e => { if (e && !destinos.includes(e)) destinos.push(e); });
+
   const mailOptions = {
     from: process.env.EMAIL_FROM || 'visitas@empresa.com',
-    to: Array.isArray(to) ? to.join(', ') : to,
+    to: destinos.join(', '),
     subject: `Visita: ${visita.sucursal_nombre} - ${visita.fecha.slice(0, 10)}`,
     html,
     attachments: incluirPDF ? [] : undefined,

@@ -8,7 +8,7 @@ export default function VisitaDetalle() {
   const navigate = useNavigate();
   const [visita, setVisita] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [emailTo, setEmailTo] = useState('');
+  const [emailTo, setEmailTo] = useState('hernando.sanchez@corporativoges.mx');
   const [sending, setSending] = useState(false);
   const [emailMsg, setEmailMsg] = useState('');
   const [downloadingPDF, setDownloadingPDF] = useState(false);
@@ -59,7 +59,6 @@ export default function VisitaDetalle() {
 
   const handleEnviarCorreo = async (e) => {
     e.preventDefault();
-    if (!emailTo) return;
     setSending(true);
     setEmailMsg('');
     try {
