@@ -18,6 +18,7 @@ const SECTIONS = [
   { id: 'rh', title: 'Recursos Humanos', desc: 'Productividad', icon: 'fa-users' },
   { id: 'delivery', title: 'Delivery y Agregadores', desc: 'Control fraude y venta perdida', icon: 'fa-motorcycle' },
   { id: 'marketing', title: 'Mercadotecnia', desc: 'Campañas, precios y licencias', icon: 'fa-bullhorn' },
+  { id: 'promociones', title: 'Promociones', desc: 'Promociones vigentes y cumplimiento', icon: 'fa-tags' },
   { id: 'plan-accion', title: 'Plan de Acción', desc: 'Acciones correctivas', icon: 'fa-tasks' },
   { id: 'resumen', title: 'Resumen y Envío', desc: 'Revise y envíe', icon: 'fa-file-export' },
 ];
@@ -31,6 +32,7 @@ const SECTION_MAP = {
   rh: ['5. Recursos Humanos'],
   delivery: ['6. Delivery y Agregadores'],
   marketing: ['7A. Mercadotecnia: Precios y Menú Board', '7B. Mercadotecnia: Material P.O.P.', '7C. Mercadotecnia: Juguetes (King Jr)', '7D. Mercadotecnia: Promociones y Cupones', 'Otros'],
+  promociones: ['8. Promociones'],
 };
 
 const FOTO_SUCURSAL_ITEM = { id: 'dato-foto-sucursal', titulo: 'Evidencia fotográfica de la sucursal', tipo: 'foto', obligatorio: 0 };
@@ -306,9 +308,18 @@ export default function NuevaVisita() {
           </div>
         )}
         {item.tipo === 'texto' && (
-          item.id === 'c1-8' || item.id === 'c9'
-            ? <textarea className="chk-input" placeholder="Escriba aquí..." value={r.valor_texto ?? ''} onChange={e => setResp(item.id, 'valor_texto', e.target.value)} rows={3} />
-            : <input type="text" className="chk-input" placeholder="Escriba aquí..." value={r.valor_texto ?? ''} onChange={e => setResp(item.id, 'valor_texto', e.target.value)} />
+          item.id.endsWith('-s') && item.seccion === '8. Promociones'
+            ? (
+              <select className="chk-input" value={r.valor_texto ?? ''} onChange={e => setResp(item.id, 'valor_texto', e.target.value)}>
+                <option value="">Seleccione semana</option>
+                {[1, 2, 3, 4].map(n => (
+                  <option key={n} value={`Semana ${n}`}>Semana {n}</option>
+                ))}
+              </select>
+            )
+            : item.id === 'c1-8' || item.id === 'c9'
+              ? <textarea className="chk-input" placeholder="Escriba aquí..." value={r.valor_texto ?? ''} onChange={e => setResp(item.id, 'valor_texto', e.target.value)} rows={3} />
+              : <input type="text" className="chk-input" placeholder="Escriba aquí..." value={r.valor_texto ?? ''} onChange={e => setResp(item.id, 'valor_texto', e.target.value)} />
         )}
         {item.tipo === 'numero' && (
           <input type="number" className="chk-input chk-input-sm" placeholder={item.titulo.includes('Temp') ? '°F' : item.titulo.includes('Tiempo') ? 'min' : item.titulo.includes('Inventario') || item.titulo.includes('Días') ? 'días' : '#'} value={r.valor_numero ?? ''} onChange={e => setResp(item.id, 'valor_numero', e.target.value)} />
@@ -509,7 +520,7 @@ export default function NuevaVisita() {
             </div>
           )}
 
-          {['financiera', 'calidad', 'mantenimiento', 'rh', 'delivery', 'marketing'].map(sec => section === sec && (
+          {['financiera', 'calidad', 'mantenimiento', 'rh', 'delivery', 'marketing', 'promociones'].map(sec => section === sec && (
             <div key={sec} className="chk-card card-audit space-y-4">
               <h3 className="chk-section-title font-bold flex items-center gap-2"><i className={`fas ${SECTIONS.find(s => s.id === sec)?.icon}`} /> {currentSectionInfo?.title}</h3>
               {getItemsForSection(sec).length > 0 ? getItemsForSection(sec).map(renderItem) : (

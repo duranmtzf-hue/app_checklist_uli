@@ -191,9 +191,25 @@ const CHECKLIST_INTEGRAL = [
   ['c7-10', 'Conocimiento del Staff: Preguntar al cajero: "¿Cuál es la promo de la App hoy?". ¿Sabe responder?', 'si_no', 65, 0, '7D. Mercadotecnia: Promociones y Cupones'],
   ['c7-11', 'Escaneo de Cupones: ¿El escáner de códigos QR de la App funciona correctamente?', 'si_no', 66, 0, '7D. Mercadotecnia: Promociones y Cupones'],
   ['c7-12', 'Promociones Agresivas: Si hay "2x$" o "Combo del Día", ¿está marcado en el sistema o requieren llamar al gerente?', 'si_no', 67, 0, '7D. Mercadotecnia: Promociones y Cupones'],
+  // ——— 8. PROMOCIONES ———
+  ['promo-vigente', 'Promoción vigente', 'texto', 70, 0, '8. Promociones'],
+  ['promo-vigente-c', 'cumplimiento', 'texto', 71, 0, '8. Promociones'],
+  ['promo-vigente-s', 'semanas', 'texto', 72, 0, '8. Promociones'],
+  ['promo-digital', 'Promociones Digitales', 'texto', 73, 0, '8. Promociones'],
+  ['promo-digital-c', 'cumplimiento', 'texto', 74, 0, '8. Promociones'],
+  ['promo-digital-s', 'semanas', 'texto', 75, 0, '8. Promociones'],
+  ['promo-trafico', 'Promoción Tráfico', 'texto', 76, 0, '8. Promociones'],
+  ['promo-trafico-c', 'cumplimiento', 'texto', 77, 0, '8. Promociones'],
+  ['promo-trafico-s', 'semanas', 'texto', 78, 0, '8. Promociones'],
+  ['promo-lto', 'Nuevo LTO', 'texto', 79, 0, '8. Promociones'],
+  ['promo-lto-c', 'cumplimiento', 'texto', 80, 0, '8. Promociones'],
+  ['promo-lto-s', 'semanas', 'texto', 81, 0, '8. Promociones'],
+  ['promo-postres', 'Postres', 'texto', 82, 0, '8. Promociones'],
+  ['promo-postres-c', 'cumplimiento', 'texto', 83, 0, '8. Promociones'],
+  ['promo-postres-s', 'semanas', 'texto', 84, 0, '8. Promociones'],
   // ——— Evidencia y cierre ———
-  ['c8', 'Evidencia fotográfica', 'foto', 68, 0, null],
-  ['c9', 'Observaciones generales', 'texto', 69, 0, null],
+  ['c8', 'Evidencia fotográfica', 'foto', 85, 0, null],
+  ['c9', 'Observaciones generales', 'texto', 86, 0, null],
 ];
 
 const countChk = db.get('SELECT COUNT(*) as c FROM checklist_plantilla');
@@ -281,6 +297,33 @@ const VENTAS_ITEMS = [
   ['ventas-c', 'cumplimiento', 'texto', -1, 0, '1. Ventas'],
 ];
 for (const row of VENTAS_ITEMS) {
+  try {
+    const exists = db.get('SELECT 1 FROM checklist_plantilla WHERE id = ?', [row[0]]);
+    if (!exists) {
+      db.run('INSERT INTO checklist_plantilla (id, titulo, tipo, orden, obligatorio, seccion) VALUES (?, ?, ?, ?, ?, ?)',
+        [row[0], row[1], row[2], row[3], row[4], row[5]]);
+    }
+  } catch (_) {}
+}
+// Migración: agregar sección Promociones
+const PROMO_ITEMS = [
+  ['promo-vigente', 'Promoción vigente', 'texto', 70, 0, '8. Promociones'],
+  ['promo-vigente-c', 'cumplimiento', 'texto', 71, 0, '8. Promociones'],
+  ['promo-vigente-s', 'semanas', 'texto', 72, 0, '8. Promociones'],
+  ['promo-digital', 'Promociones Digitales', 'texto', 73, 0, '8. Promociones'],
+  ['promo-digital-c', 'cumplimiento', 'texto', 74, 0, '8. Promociones'],
+  ['promo-digital-s', 'semanas', 'texto', 75, 0, '8. Promociones'],
+  ['promo-trafico', 'Promoción Tráfico', 'texto', 76, 0, '8. Promociones'],
+  ['promo-trafico-c', 'cumplimiento', 'texto', 77, 0, '8. Promociones'],
+  ['promo-trafico-s', 'semanas', 'texto', 78, 0, '8. Promociones'],
+  ['promo-lto', 'Nuevo LTO', 'texto', 79, 0, '8. Promociones'],
+  ['promo-lto-c', 'cumplimiento', 'texto', 80, 0, '8. Promociones'],
+  ['promo-lto-s', 'semanas', 'texto', 81, 0, '8. Promociones'],
+  ['promo-postres', 'Postres', 'texto', 82, 0, '8. Promociones'],
+  ['promo-postres-c', 'cumplimiento', 'texto', 83, 0, '8. Promociones'],
+  ['promo-postres-s', 'semanas', 'texto', 84, 0, '8. Promociones'],
+];
+for (const row of PROMO_ITEMS) {
   try {
     const exists = db.get('SELECT 1 FROM checklist_plantilla WHERE id = ?', [row[0]]);
     if (!exists) {
