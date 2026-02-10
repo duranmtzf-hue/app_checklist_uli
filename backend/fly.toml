@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for app-checklist-uli on 2026-02-08T18:18:24Z
+# fly.toml app configuration file generated for app-checklist-uli on 2026-02-08T19:24:31Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,13 +7,6 @@ app = 'app-checklist-uli'
 primary_region = 'dfw'
 
 [build]
-  [build.args]
-    NODE_ENV = "production"
-
-[env]
-  PORT = "8080"
-  DB_PATH = "/data/app.db"
-  UPLOAD_DIR = "/data/uploads"
 
 [http_service]
   internal_port = 8080
