@@ -111,58 +111,6 @@ export default function VisitaDetalle() {
         <p className="flex justify-between"><span className="text-[var(--text-muted)]">Evaluador</span><span className="font-semibold text-[var(--text)]">{visita.usuario_nombre || 'Ulises Sanchez'}</span></p>
       </div>
 
-      <div className="flex flex-col gap-2">
-        {!canDownloadPDF && (
-          <p className="text-sm font-medium" style={{ color: 'var(--warning)' }}>
-            <i className="fas fa-exclamation-triangle mr-1" /> Se requiere al menos 80% del checklist completado para descargar el PDF ({progressPercent}%).
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={handleDescargarPDF}
-          disabled={downloadingPDF || id?.startsWith('offline-') || !canDownloadPDF}
-          className="btn btn-primary flex-1"
-        >
-          <i className={`fas ${downloadingPDF ? 'fa-spinner fa-spin' : 'fa-file-pdf'}`} />
-          {downloadingPDF ? 'Generando…' : 'Descargar PDF'}
-        </button>
-        {pdfMsg && (
-          <p className={`text-sm font-medium ${pdfMsg.includes('Error') ? '' : ''}`} style={{ color: pdfMsg.includes('Error') ? 'var(--danger)' : 'var(--success)' }}>
-            {pdfMsg}
-          </p>
-        )}
-      </div>
-
-      <section>
-        <h2 className="font-semibold mb-2 flex items-center gap-2" style={{ color: 'var(--success)' }}>
-          <span className="w-7 h-7 rounded-full flex items-center justify-center text-sm" style={{ background: 'rgba(74,222,128,0.2)', color: 'var(--success)' }}><i className="fas fa-check" /></span>
-          Cumplió ({siCumple.length})
-        </h2>
-        <ul className="space-y-1.5">
-          {siCumple.map(r => (
-            <li key={r.id} className="card-audit py-2.5 px-3 text-[var(--text)] text-sm flex items-center gap-2">
-              <span style={{ color: 'var(--success)' }}>•</span> {r.titulo}
-            </li>
-          ))}
-          {siCumple.length === 0 && <li className="text-[var(--text-muted)] text-sm">Ninguno</li>}
-        </ul>
-      </section>
-
-      <section>
-        <h2 className="font-semibold mb-2 flex items-center gap-2" style={{ color: 'var(--warning)' }}>
-          <span className="w-7 h-7 rounded-full flex items-center justify-center text-sm" style={{ background: 'rgba(245,158,11,0.2)', color: 'var(--warning)' }}><i className="fas fa-times" /></span>
-          No cumplió ({noCumple.length})
-        </h2>
-        <ul className="space-y-1.5">
-          {noCumple.map(r => (
-            <li key={r.id} className="card-audit py-2.5 px-3 text-[var(--text)] text-sm">
-              {r.titulo}{r.observaciones ? <span className="text-[var(--text-muted)] block mt-0.5">— {r.observaciones}</span> : ''}
-            </li>
-          ))}
-          {noCumple.length === 0 && <li className="text-[var(--text-muted)] text-sm">Ninguno</li>}
-        </ul>
-      </section>
-
       {respuestas.filter(r => r.tipo !== 'si_no' && (r.valor_texto || r.valor_numero != null || r.valor_porcentaje != null || r.valor_foto_path)).length > 0 && (
         <section>
           <h2 className="font-semibold text-[var(--text)] mb-2">Datos y observaciones</h2>
@@ -217,6 +165,58 @@ export default function VisitaDetalle() {
           </div>
         </section>
       )}
+
+      <div className="flex flex-col gap-2">
+        {!canDownloadPDF && (
+          <p className="text-sm font-medium" style={{ color: 'var(--warning)' }}>
+            <i className="fas fa-exclamation-triangle mr-1" /> Se requiere al menos 80% del checklist completado para descargar el PDF ({progressPercent}%).
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={handleDescargarPDF}
+          disabled={downloadingPDF || id?.startsWith('offline-') || !canDownloadPDF}
+          className="btn btn-primary flex-1"
+        >
+          <i className={`fas ${downloadingPDF ? 'fa-spinner fa-spin' : 'fa-file-pdf'}`} />
+          {downloadingPDF ? 'Generando…' : 'Descargar PDF'}
+        </button>
+        {pdfMsg && (
+          <p className={`text-sm font-medium ${pdfMsg.includes('Error') ? '' : ''}`} style={{ color: pdfMsg.includes('Error') ? 'var(--danger)' : 'var(--success)' }}>
+            {pdfMsg}
+          </p>
+        )}
+      </div>
+
+      <section>
+        <h2 className="font-semibold mb-2 flex items-center gap-2" style={{ color: 'var(--success)' }}>
+          <span className="w-7 h-7 rounded-full flex items-center justify-center text-sm" style={{ background: 'rgba(74,222,128,0.2)', color: 'var(--success)' }}><i className="fas fa-check" /></span>
+          Cumplió ({siCumple.length})
+        </h2>
+        <ul className="space-y-1.5">
+          {siCumple.map(r => (
+            <li key={r.id} className="card-audit py-2.5 px-3 text-[var(--text)] text-sm flex items-center gap-2">
+              <span style={{ color: 'var(--success)' }}>•</span> {r.titulo}
+            </li>
+          ))}
+          {siCumple.length === 0 && <li className="text-[var(--text-muted)] text-sm">Ninguno</li>}
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="font-semibold mb-2 flex items-center gap-2" style={{ color: 'var(--warning)' }}>
+          <span className="w-7 h-7 rounded-full flex items-center justify-center text-sm" style={{ background: 'rgba(245,158,11,0.2)', color: 'var(--warning)' }}><i className="fas fa-times" /></span>
+          No cumplió ({noCumple.length})
+        </h2>
+        <ul className="space-y-1.5">
+          {noCumple.map(r => (
+            <li key={r.id} className="card-audit py-2.5 px-3 text-[var(--text)] text-sm">
+              {r.titulo}{r.observaciones ? <span className="text-[var(--text-muted)] block mt-0.5">— {r.observaciones}</span> : ''}
+            </li>
+          ))}
+          {noCumple.length === 0 && <li className="text-[var(--text-muted)] text-sm">Ninguno</li>}
+        </ul>
+      </section>
 
       {visita._offline && (
         <div className="card-audit p-3 flex items-center gap-2" style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'var(--warning)' }}>
