@@ -332,6 +332,25 @@ for (const row of PROMO_ITEMS) {
     }
   } catch (_) {}
 }
+// Migración: eliminar Regional Ejemplo y su estructura (distritos, sucursales) si no hay visitas
+try {
+  const regEj = db.get("SELECT id FROM regionales WHERE nombre = 'Regional Ejemplo'");
+  if (regEj) {
+    const sucIds = db.prepare(`
+      SELECT s.id FROM sucursales s JOIN distritos d ON s.distrito_id = d.id WHERE d.regional_id = ?
+    `).all(regEj.id).map((r) => r.id);
+    let hasVisitas = false;
+    if (sucIds.length > 0) {
+      const placeholders = sucIds.map(() => '?').join(',');
+      hasVisitas = !!db.prepare(`SELECT 1 FROM visitas WHERE sucursal_id IN (${placeholders}) LIMIT 1`).get(...sucIds);
+    }
+    if (!hasVisitas) {
+      for (const sid of sucIds) db.run('DELETE FROM sucursales WHERE id = ?', [sid]);
+      db.run('DELETE FROM distritos WHERE regional_id = ?', [regEj.id]);
+      db.run('DELETE FROM regionales WHERE id = ?', [regEj.id]);
+    }
+  }
+} catch (_) {}
 // Migración: Resultado Auditoría Meta >95%
 try {
   db.run('UPDATE checklist_plantilla SET titulo = ? WHERE id = ?', ['Resultado Global Auditoría: Dato actual (%) — Meta >95%', 'c1-5']);

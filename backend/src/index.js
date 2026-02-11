@@ -58,10 +58,6 @@ const userCount = db.prepare('SELECT COUNT(*) as c FROM users').get();
 if (userCount.c === 0) {
   const id = randomUUID();
   db.prepare('INSERT INTO users (id, email, password_hash, name, role) VALUES (?, ?, ?, ?, ?)').run(id, 'admin@uli.com', hashPassword('admin123'), 'Administrador', 'admin');
-  const regId = randomUUID(), distId = randomUUID(), sucId = randomUUID();
-  db.prepare('INSERT INTO regionales (id, nombre) VALUES (?, ?)').run(regId, 'Regional Ejemplo');
-  db.prepare('INSERT INTO distritos (id, regional_id, nombre) VALUES (?, ?, ?)').run(distId, regId, 'Distrito Centro');
-  db.prepare('INSERT INTO sucursales (id, distrito_id, nombre, direccion) VALUES (?, ?, ?, ?)').run(sucId, distId, 'Sucursal Principal', 'Av. Ejemplo 123');
   console.log('Usuario inicial creado: admin@uli.com / admin123');
 }
 

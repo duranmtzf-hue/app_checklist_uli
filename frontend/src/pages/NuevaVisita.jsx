@@ -191,9 +191,14 @@ export default function NuevaVisita() {
     return base;
   };
 
+  const fechaLocal = () => {
+    const n = new Date();
+    const p = (x) => String(x).padStart(2, '0');
+    return `${n.getFullYear()}-${p(n.getMonth() + 1)}-${p(n.getDate())} ${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  };
   const buildPayload = (estado = 'completada') => ({
     sucursal_id: selected.sucursal,
-    fecha: new Date().toISOString().slice(0, 19).replace('T', ' '),
+    fecha: fechaLocal(),
     gerente: gerente || null,
     plan_accion: null,
     plan_financiero: planFinanciero || null,

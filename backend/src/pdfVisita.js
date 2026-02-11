@@ -70,6 +70,12 @@ function wrapText(text, font, fontSize, maxWidth) {
 function formatearFecha(fechaStr) {
   if (!fechaStr) return '-';
   try {
+    const s = String(fechaStr).trim();
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+    if (m) {
+      const [, y, mo, d, h, min] = m;
+      return `${d}/${mo}/${y}, ${String(h).padStart(2, '0')}:${min}`;
+    }
     const d = new Date(fechaStr.replace(' ', 'T'));
     if (isNaN(d.getTime())) return String(fechaStr).slice(0, 20);
     return d.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
