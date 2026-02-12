@@ -424,8 +424,8 @@ if (!runSeed) {
 
 function seedEstructura() {
   const regs = [
-    ['reg-01', 'Región 01 - Gerencia Región Norte'],
-    ['reg-02', 'Region Norte'],
+    ['reg-01', 'Región 01 gerencia norte'],
+    ['reg-02', 'Región 02 gerencia Norte'],
   ];
   for (const r of regs) {
     try {
@@ -465,7 +465,8 @@ function seedEstructura() {
       } catch (_) {}
     }
   }
-  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Region Norte', 'reg-02']);
+  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Región 01 gerencia norte', 'reg-01']);
+  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Región 02 gerencia Norte', 'reg-02']);
 }
 
 // Restaurar estructura: añade regionales, distritos y sucursales por defecto si faltan (no borra visitas)
@@ -479,9 +480,10 @@ if (countReg.c === 0) seedEstructura();
 
 export { seedEstructura, reseedEstructuraForce };
 
-// Migración: renombrar Región 02 → Region Norte (DBs existentes)
+// Migración: actualizar nombres de regionales (DBs existentes)
 try {
-  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Region Norte', 'reg-02']);
+  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Región 01 gerencia norte', 'reg-01']);
+  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Región 02 gerencia Norte', 'reg-02']);
 } catch (_) {}
 
 // Wrapper que expone prepare().run/get/all sin tocar el prepare nativo
