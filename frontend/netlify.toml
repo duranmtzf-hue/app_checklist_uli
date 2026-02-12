@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  VITE_API_URL = "https://app-checklist-uli.fly.dev"
+  VITE_API_URL = "https://app-checklist-uli.fly.dev/api"
 
 [[redirects]]
   from = "/*"

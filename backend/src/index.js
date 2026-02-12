@@ -10,6 +10,7 @@ import multer from 'multer';
 import { db } from './db.js';
 import { hashPassword } from './auth.js';
 import auth from './routes/auth.js';
+import admin from './routes/admin.js';
 import regionales from './routes/regionales.js';
 import distritos from './routes/distritos.js';
 import sucursales from './routes/sucursales.js';
@@ -36,6 +37,7 @@ app.use(express.json());
 app.use('/uploads', express.static(uploadDir));
 
 app.use('/api/auth', auth);
+app.use('/api/admin', admin);
 app.use('/api/regionales', regionales);
 app.use('/api/distritos', distritos);
 app.use('/api/sucursales', sucursales);

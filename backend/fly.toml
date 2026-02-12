@@ -30,6 +30,11 @@ primary_region = 'dfw'
   path = "/"
   timeout = "5s"
 
+# Para persistencia de datos, descomentar y crear volumen: fly volumes create app_data -r dfw
+# [mounts]
+#   source = "app_data"
+#   destination = "/data"
+
 [[vm]]
   memory = '1gb'
   cpu_kind = 'shared'

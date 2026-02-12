@@ -422,14 +422,16 @@ if (!runSeed) {
   }
 }
 
-// Seed Burger King: Regiones, Distritos, Sucursales (60 restaurantes)
-const countReg = db.get('SELECT COUNT(*) as c FROM regionales');
-if (countReg.c === 0) {
+function seedEstructura() {
   const regs = [
     ['reg-01', 'Región 01 - Gerencia Región Norte'],
     ['reg-02', 'Region Norte'],
   ];
-  for (const r of regs) db.run('INSERT INTO regionales (id, nombre) VALUES (?, ?)', r);
+  for (const r of regs) {
+    try {
+      db.run('INSERT OR IGNORE INTO regionales (id, nombre) VALUES (?, ?)', r);
+    } catch (_) {}
+  }
 
   const dists = [
     ['dist-01', 'reg-01', 'Distrito 01 - Tijuana, Tecate, Rosarito', 7],
@@ -443,22 +445,39 @@ if (countReg.c === 0) {
     ['dist-09', 'reg-02', 'Distrito 09 - Mazatlán y Tepic', 7],
     ['dist-10', 'reg-02', 'Distrito 10 - Durango y Torreón', 7],
   ];
-  for (const d of dists) db.run('INSERT INTO distritos (id, regional_id, nombre) VALUES (?, ?, ?)', [d[0], d[1], d[2]]);
-
-  let n = 0;
-  const ciudades = ['Tijuana', 'Tecate', 'Rosarito', 'Ensenada', 'Mexicali', 'SLRC', 'Nogales', 'Obregón', 'Puerto Peñasco', 'La Paz', 'Culiacán', 'Guasave', 'Mazatlán', 'Tepic', 'Durango', 'Torreón'];
   for (const d of dists) {
-    const [distId, , nombre] = d;
-    const total = d[3];
+    try {
+      db.run('INSERT OR IGNORE INTO distritos (id, regional_id, nombre) VALUES (?, ?, ?)', [d[0], d[1], d[2]]);
+    } catch (_) {}
+  }
+
+  const ciudades = ['Tijuana', 'Tecate', 'Rosarito', 'Ensenada', 'Mexicali', 'SLRC', 'Nogales', 'Obregón', 'Puerto Peñasco', 'La Paz', 'Culiacán', 'Guasave', 'Mazatlán', 'Tepic', 'Durango', 'Torreón'];
+  let n = 0;
+  for (const d of dists) {
+    const [distId, , , total] = d;
     for (let i = 1; i <= total; i++) {
       n++;
       const fmt = n <= 31 ? 'free_standing' : n <= 50 ? 'food_court' : 'in_line';
       const ciudad = ciudades[(n - 1) % ciudades.length];
-      db.run('INSERT INTO sucursales (id, distrito_id, nombre, formato) VALUES (?, ?, ?, ?)',
-        [`suc-${String(n).padStart(3, '0')}`, distId, `BK ${ciudad} ${i}`, fmt]);
+      try {
+        db.run('INSERT OR IGNORE INTO sucursales (id, distrito_id, nombre, formato) VALUES (?, ?, ?, ?)',
+          [`suc-${String(n).padStart(3, '0')}`, distId, `BK ${ciudad} ${i}`, fmt]);
+      } catch (_) {}
     }
   }
+  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Region Norte', 'reg-02']);
 }
+
+// Restaurar estructura: añade regionales, distritos y sucursales por defecto si faltan (no borra visitas)
+function reseedEstructuraForce() {
+  seedEstructura();
+}
+
+// Seed al iniciar si vacío
+const countReg = db.get('SELECT COUNT(*) as c FROM regionales');
+if (countReg.c === 0) seedEstructura();
+
+export { seedEstructura, reseedEstructuraForce };
 
 // Migración: renombrar Región 02 → Region Norte (DBs existentes)
 try {

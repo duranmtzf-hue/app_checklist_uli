@@ -20,6 +20,10 @@ export const auth = {
   register: (body) => api('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
 };
 
+export const admin = {
+  reseedEstructura: () => api('/admin/reseed-estructura', { method: 'POST' }),
+};
+
 export const regionales = {
   list: () => api('/regionales'),
   create: (body) => api('/regionales', { method: 'POST', body: JSON.stringify(body) }),

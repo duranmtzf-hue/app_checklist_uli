@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { regionales as apiReg, distritos as apiDist, sucursales as apiSuc } from '../api';
+import { regionales as apiReg, distritos as apiDist, sucursales as apiSuc, admin as apiAdmin } from '../api';
 import { useAuth } from '../AuthContext';
 import { isOnline } from '../store';
 
@@ -13,6 +13,7 @@ export default function Estructura() {
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState({});
   const [deleting, setDeleting] = useState(null);
+  const [restoring, setRestoring] = useState(false);
 
   const load = () => {
     setLoading(true);
@@ -94,6 +95,19 @@ export default function Estructura() {
     }
   };
 
+  const handleRestoreEstructura = async () => {
+    if (!confirm('¿Restaurar regionales, distritos y sucursales por defecto?')) return;
+    setRestoring(true);
+    try {
+      await apiAdmin.reseedEstructura();
+      load();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setRestoring(false);
+    }
+  };
+
   const handleDeleteSucursal = async (s) => {
     if (!confirm(`¿Eliminar sucursal "${s.nombre}"?`)) return;
     setDeleting(s.id);
@@ -128,6 +142,14 @@ export default function Estructura() {
         </div>
       ) : (
         <>
+          {canEdit && !loading && regionales.length === 0 && (
+            <div className="card-audit p-4 mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3" style={{ borderColor: 'rgba(234,179,8,0.5)' }}>
+              <p className="text-[var(--text-muted)] text-sm flex-1">No hay datos de estructura. Restaura los datos por defecto (regionales, distritos y sucursales).</p>
+              <button type="button" onClick={handleRestoreEstructura} disabled={restoring} className="btn btn-primary text-sm py-2 shrink-0">
+                <i className={`fas ${restoring ? 'fa-spinner fa-spin' : 'fa-database'}`} /> {restoring ? 'Restaurando…' : 'Restaurar estructura'}
+              </button>
+            </div>
+          )}
           <section>
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-semibold text-[var(--text)]">Regionales</h2>
