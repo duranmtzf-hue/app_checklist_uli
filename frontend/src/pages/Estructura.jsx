@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { regionales as apiReg, distritos as apiDist, sucursales as apiSuc } from '../api';
 import { useAuth } from '../AuthContext';
 import { isOnline } from '../store';
@@ -190,9 +191,9 @@ export default function Estructura() {
         </>
       )}
 
-      {modal?.type === 'regional' && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-30">
-          <div className="card-audit max-w-sm w-full border-2" style={{ borderColor: 'rgba(67,97,238,0.3)' }}>
+      {modal?.type === 'regional' && createPortal(
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[100]" onClick={() => setModal(null)}>
+          <div className="card-audit max-w-sm w-full border-2" style={{ borderColor: 'rgba(67,97,238,0.3)' }} onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold text-[var(--text)] mb-4">Nueva regional</h3>
             <form onSubmit={handleCreateRegional}>
               <input className="input-audit mb-4" placeholder="Nombre" value={form.nombre ?? ''} onChange={(e) => setForm(f => ({ ...f, nombre: e.target.value }))} required />
@@ -202,12 +203,13 @@ export default function Estructura() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {modal?.type === 'distrito' && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-30">
-          <div className="card-audit max-w-sm w-full border-2" style={{ borderColor: 'rgba(67,97,238,0.3)' }}>
+      {modal?.type === 'distrito' && createPortal(
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[100]" onClick={() => setModal(null)}>
+          <div className="card-audit max-w-sm w-full border-2" style={{ borderColor: 'rgba(67,97,238,0.3)' }} onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold text-[var(--text)] mb-4">Nuevo distrito</h3>
             <form onSubmit={handleCreateDistrito}>
               <select className="select-audit mb-4" value={form.regional_id ?? ''} onChange={(e) => setForm(f => ({ ...f, regional_id: e.target.value }))} required>
@@ -243,12 +245,13 @@ export default function Estructura() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {modal?.type === 'sucursal' && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-30">
-          <div className="card-audit max-w-sm w-full border-2" style={{ borderColor: 'rgba(67,97,238,0.3)' }}>
+      {modal?.type === 'sucursal' && createPortal(
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-[100]" onClick={() => setModal(null)}>
+          <div className="card-audit max-w-sm w-full border-2" style={{ borderColor: 'rgba(67,97,238,0.3)' }} onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold text-[var(--text)] mb-4">Nueva sucursal</h3>
             <form onSubmit={handleCreateSucursal}>
               <select className="select-audit mb-4" value={form.distrito_id ?? ''} onChange={(e) => setForm(f => ({ ...f, distrito_id: e.target.value }))} required>
@@ -263,7 +266,8 @@ export default function Estructura() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

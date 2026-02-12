@@ -3,6 +3,9 @@
   publish = "dist"
   base = "frontend"
 
+[build.environment]
+  VITE_API_URL = "https://app-checklist-uli.fly.dev"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

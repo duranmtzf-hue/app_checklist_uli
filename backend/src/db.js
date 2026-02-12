@@ -427,7 +427,7 @@ const countReg = db.get('SELECT COUNT(*) as c FROM regionales');
 if (countReg.c === 0) {
   const regs = [
     ['reg-01', 'Región 01 - Gerencia Región Norte'],
-    ['reg-02', 'Región 02'],
+    ['reg-02', 'Region Norte'],
   ];
   for (const r of regs) db.run('INSERT INTO regionales (id, nombre) VALUES (?, ?)', r);
 
@@ -459,6 +459,11 @@ if (countReg.c === 0) {
     }
   }
 }
+
+// Migración: renombrar Región 02 → Region Norte (DBs existentes)
+try {
+  db.run('UPDATE regionales SET nombre = ? WHERE id = ?', ['Region Norte', 'reg-02']);
+} catch (_) {}
 
 // Wrapper que expone prepare().run/get/all sin tocar el prepare nativo
 const wrapper = {
